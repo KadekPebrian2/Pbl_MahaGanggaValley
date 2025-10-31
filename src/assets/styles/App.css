@@ -1,0 +1,372 @@
+/* === IMPORT FONT === */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap");
+
+/* === DEFINISI WARNA & VARIABEL === */
+:root {
+  --bg: #fbfdfb;
+  --sage: #a8c3a7;
+  --sage-dark: #7f9f87;
+  --forest: #4b5945;
+  --ink: #0f1720;
+  --muted: #6b7280;
+  --card: #fff;
+  --shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
+  --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* === RESET & GAYA DASAR === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+.container {
+  width: min(1150px, 92%);
+  margin: 0 auto;
+}
+
+/* === TOMBOL (BUTTON) === */
+.btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 15px;
+  text-align: center;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+  background: var(--sage);
+  color: white;
+  box-shadow: 0 4px 15px rgba(127, 159, 135, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--sage-dark);
+}
+
+/* ... (Sisa gaya tombol sama) ... */
+.btn-outline {
+  background-color: var(--sage);
+  color: white;
+}
+.btn-outline:hover {
+  background-color: var(--sage-dark);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--forest);
+  border-color: #d8e0d8;
+}
+
+/* === NAVBAR === */
+.nav-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(251, 253, 251, 0.85);
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+}
+
+.brand-title {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: -2px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--sage-dark);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background: var(--ink);
+  border-radius: 3px;
+  transition: all 0.3s;
+}
+
+.nav-divider,
+.nav-mobile-actions {
+  display: none;
+}
+
+/* =================================================================== */
+/* PENJELASAN 1: ANIMASI BARU YANG LEBIH "MANTAP"                    */
+/* =================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px); /* Jarak slide-up diperjauh */
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transition-delay: var(--delay, 0s); /* Menggunakan variabel CSS untuk jeda */
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === GAYA UMUM SECTION === */
+.section-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-head h3 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(1.875rem, 5vw, 2.625rem);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.section-head p {
+  color: var(--muted);
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+}
+
+/* === ATURAN TINGGI "FULLSCREEN" (HANYA UNTUK DESKTOP) === */
+@media (min-width: 981px) {
+  .home-section,
+  .gallery-section,
+  .map-section,
+  .comments-section {
+    height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+  }
+}
+
+/* === HOME SECTION === */
+.home-section {
+  padding: 70px 0;
+}
+.home-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--sage-dark);
+  font-weight: 600;
+}
+
+.hero-title {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.1;
+  margin: 8px 0 16px;
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 3vw, 1.125rem);
+  max-width: 45ch;
+  margin-bottom: 24px;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+}
+
+.hero-cta .btn {
+  min-width: 180px;
+}
+
+.hero-card {
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  background: var(--card);
+}
+
+.card-image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 8px;
+  background-image: url("/images/hero.jpg");
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.4s ease-out;
+}
+
+.hero-card:hover .card-image {
+  transform: scale(1.05);
+}
+
+.card-accent {
+  text-align: center;
+  font-weight: 600;
+  margin-top: 12px;
+  font-size: 15px;
+}
+
+/* ... (Sisa kode CSS dari jawaban sebelumnya tetap sama persis) ... */
+/* === GALLERY SECTION === */
+.gallery-section .section-head { margin-bottom: 25px; }
+.slider-wrap { position: relative; max-width: 850px; margin: 0 auto; }
+.slider-viewport { overflow: hidden; border-radius: 16px; box-shadow: var(--shadow); background: var(--card); }
+.slider-track { display: flex; transition: transform 0.5s ease-in-out; }
+.slide-item { flex: 0 0 100%; }
+.slide-item img { width: 100%; aspect-ratio: 16/6.5; object-fit: cover; display: block; }
+.slide-item figcaption { padding: 16px 20px; border-top: 1px solid #f0f0f0; }
+.cap-title { font-weight: 700; font-size: 18px; }
+.cap-sub { color: var(--muted); }
+.slide-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.9); border: 1px solid #eee; width: 44px; height: 44px; border-radius: 50%; font-size: 28px; cursor: pointer; z-index: 10; }
+.slide-btn.left { left: -22px; }
+.slide-btn.right { right: -22px; }
+.dots { text-align: center; margin-top: 15px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #d8e0d8; border: none; margin: 0 5px; cursor: pointer; transition: background 0.3s; }
+.dot.active { background: var(--sage-dark); }
+.map-frame { max-width: 850px; margin: 0 auto; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid #e8e8e8; }
+.map-frame iframe { width: 100%; height: 100%; border: 0; }
+.comments-section .container { max-width: 1000px; }
+.comment-form-wrapper { background-color: #eef3ee; padding: 24px; border-radius: 12px; max-width: 720px; margin: 18px auto 40px; }
+.comment-form { display: flex; flex-direction: column; gap: 16px; }
+.comment-form input, .comment-form textarea { background: #fff; border: 1px solid #dde2dd; box-shadow: none; padding: 12px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 15px; }
+.comment-form textarea { min-height: 100px; resize: vertical; }
+.comment-form-actions { display: flex; gap: 12px; justify-content: flex-end; }
+.comment-form-actions .btn-primary { background: var(--sage-dark); }
+.comment-form-actions .btn-ghost { background: #d8e0d8; color: var(--forest); border: none; }
+.comments-list-container { overflow: hidden; }
+.comments-list { display: flex; overflow-x: auto; gap: 20px; padding: 10px; scroll-snap-type: x mandatory; }
+.comment-card { flex: 0 0 48%; background: var(--card); padding: 20px; border: 1px solid #e8e8e8; border-radius: 12px; box-shadow: var(--shadow-light); position: relative; scroll-snap-align: start; }
+.comments-list::-webkit-scrollbar { height: 8px; }
+.comments-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+.comments-list::-webkit-scrollbar-thumb { background: var(--sage); border-radius: 10px; }
+.comments-list::-webkit-scrollbar-thumb:hover { background: var(--sage-dark); }
+.comment-card strong { font-weight: 600; font-size: 16px; }
+.comment-card .body { font-size: 15px; color: var(--muted); margin-top: 4px; font-style: italic; }
+.delete-comment-btn { position: absolute; top: 10px; right: 10px; background: #f1f1f1; border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 20px; line-height: 28px; text-align: center; cursor: pointer; color: var(--muted); opacity: 0.5; transition: all 0.2s; }
+.delete-comment-btn:hover { background: #e74c3c; color: white; opacity: 1; }
+.footer { padding: 48px 0 32px; background: #eef3ee; color: var(--forest); font-size: 15px; }
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px; }
+.footer-col h4, .footer-col h5 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 18px; margin-bottom: 12px; }
+.contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.socials { display: flex; gap: 12px; }
+.socials a { color: var(--forest); }
+.socials a:hover { color: var(--sage-dark); }
+.footer-divider { border: none; border-top: 1px solid #d8e0d8; margin: 32px 0 24px; }
+.copy { text-align: center; opacity: 0.8; font-size: 14px; }
+.account-btn { background: transparent; border: none; cursor: pointer; color: var(--ink); padding: 5px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.account-btn:hover { background: #f0f0f0; }
+.account-menu-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 110; opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; }
+html.account-menu-open .account-menu-overlay { opacity: 1; visibility: visible; }
+.account-menu { position: fixed; top: 0; right: 0; width: 100%; max-width: 350px; height: 100%; background: var(--bg); z-index: 120; box-shadow: -5px 0 20px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s ease-in-out; display: flex; flex-direction: column; }
+html.account-menu-open .account-menu { transform: translateX(0); }
+.account-menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #e8e8e8; }
+.account-menu-header h3 { font-family: 'Playfair Display', serif; }
+.account-menu-header button { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--muted); }
+.account-menu-body { padding: 20px; flex-grow: 1; }
+.account-menu-body p { color: var(--muted); margin-bottom: 20px; }
+.account-menu-actions { display: flex; flex-direction: column; gap: 15px; }
+.account-menu-actions .btn { width: 100%; }
+
+@media (max-width: 768px) {
+  .nav-actions-desktop { display: none; }
+  .hamburger { display: flex; }
+  .nav-links { display: none; }
+  .nav-open .nav-links {
+    position: fixed;
+    inset: 70px 12px auto 12px;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 25px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    box-shadow: var(--shadow);
+    animation: fadeIn 0.3s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .nav-divider { display: block; height: 1px; background-color: #e8e8e8; margin: 10px 0; }
+  .nav-mobile-actions { display: flex; gap: 10px; justify-content: center; }
+  .nav-mobile-actions .btn { width: 100%; }
+  .nav-open .hamburger span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .nav-open .hamburger span:nth-child(2) { opacity: 0; }
+  .nav-open .hamburger span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+  section { padding: 60px 0; }
+  .home-inner { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+  .hero-card { order: -1; }
+  .hero-sub { margin: 0 auto 24px; }
+  .hero-cta { justify-content: center; }
+  .slide-btn { display: none; }
+  .comment-card { flex: 0 0 85%; scroll-snap-align: center; }
+  .footer-grid { text-align: center; }
+  .contact-item, .socials { justify-content: center; }
+}

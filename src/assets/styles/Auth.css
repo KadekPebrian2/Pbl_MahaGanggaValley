@@ -1,0 +1,195 @@
+/* src/assets/styles/Auth.css (FINAL - Blur Kembali, Warna & Posisi Disesuaikan) */
+
+:root {
+  /* Warna Teks (sekarang didominasi putih agar kontras) */
+  --auth-text-light: #ffffff;
+  --auth-text-muted-light: rgba(255, 255, 255, 0.8);
+
+  /* Warna Form & Input (dibuat lebih gelap & transparan) */
+  --auth-form-bg: rgba(10, 20, 30, 0.25);
+  --auth-input-bg: rgba(255, 255, 255, 0.1);
+  --auth-input-border: rgba(255, 255, 255, 0.3);
+  --auth-input-focus: #a8c3a7; /* Warna sage terang saat aktif */
+  
+  /* Warna Tombol (tetap sama) */
+  --auth-button-bg: #80997f;
+  --auth-button-hover: #6a8269;
+
+  --auth-shadow-soft: rgba(0, 0, 0, 0.25) 0px 10px 30px;
+}
+
+.auth-full-screen-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+.auth-background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/hero2.png');
+  background-size: cover;
+  background-position: center-top; /* === Posisi background diatur di sini === */
+  z-index: 1;
+}
+
+.auth-background-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 2;
+}
+
+.auth-back-btn {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--auth-text-light);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.auth-back-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.auth-center-form-container {
+  position: relative;
+  z-index: 5;
+  width: min(450px, 90%);
+  background: var(--auth-form-bg);
+  backdrop-filter: blur(15px); /* === Efek blur kembali aktif === */
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: var(--auth-shadow-soft);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  color: var(--auth-text-light); /* Teks default di dalam card jadi putih */
+}
+
+.auth-title-block {
+  margin-bottom: 35px;
+}
+.auth-title-block .title-main {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: var(--auth-text-light); /* Warna disesuaikan */
+  display: block;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.auth-title-block .title-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: var(--auth-text-muted-light); /* Warna disesuaikan */
+  display: block;
+  margin-top: 4px;
+}
+
+.form-group-centered {
+  position: relative;
+  margin-bottom: 20px;
+}
+.form-group-centered input {
+  width: 100%;
+  padding: 14px 15px 14px 50px;
+  border: 1px solid var(--auth-input-border);
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: var(--auth-input-bg); /* Warna disesuaikan */
+  color: var(--auth-text-light); /* Teks yang diketik jadi putih */
+}
+.form-group-centered input::placeholder {
+  color: var(--auth-text-muted-light);
+}
+.form-group-centered input:focus {
+  outline: none;
+  border-color: var(--auth-input-focus);
+  box-shadow: 0 0 0 3px rgba(168, 195, 167, 0.3);
+}
+.input-icon-centered {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--auth-text-muted-light);
+}
+.input-icon-centered svg { width: 20px; height: 20px; }
+
+.auth-submit-button-centered {
+  width: 100%;
+  padding: 15px 20px;
+  background-color: var(--auth-button-bg);
+  color: var(--auth-text-light);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.auth-submit-button-centered:hover {
+  background-color: var(--auth-button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(128, 153, 127, 0.3);
+}
+
+.auth-options-centered {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: var(--auth-text-light); /* Warna disesuaikan */
+}
+.auth-options-centered .remember-me-checkbox { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.auth-options-centered .remember-me-checkbox input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--auth-button-bg); }
+.auth-options-centered a {
+  color: var(--auth-text-muted-light);
+  text-decoration: none;
+  font-weight: 500;
+}
+.auth-options-centered a:hover {
+  color: var(--auth-text-light);
+  text-decoration: underline;
+}
+
+.auth-switch-link-bottom {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: var(--auth-text-muted-light); /* Warna disesuaikan */
+}
+.auth-switch-link-bottom a {
+  color: var(--auth-text-light);
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+  .auth-back-btn { top: 20px; left: 20px; }
+  .auth-center-form-container { width: 90%; padding: 30px 20px; }
+  .auth-title-block { margin-bottom: 25px; }
+  .auth-title-block .title-main { font-size: 1.9rem; }
+  .auth-options-centered { flex-direction: column; gap: 12px; align-items: flex-start; }
+}
