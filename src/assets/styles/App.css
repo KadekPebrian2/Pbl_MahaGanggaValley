@@ -1,9 +1,17 @@
-/* === IMPORT FONT === */
+/* src/assets/styles/App.css */
+
+/* === 1. IMPORT FONT === */
+/* Meng-import font 'Poppins' (untuk teks biasa) dan 'Playfair Display' (untuk judul)
+   langsung dari Google Fonts. */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap");
 
-/* === DEFINISI WARNA & VARIABEL === */
+/* === 2. DEFINISI VARIABEL GLOBAL (:root) === */
+/* :root adalah 'akar' dari dokumen. Ini tempat terbaik untuk menyimpan
+   variabel CSS (CSS Custom Properties) agar bisa dipakai di mana saja.
+   Contoh: var(--bg) akan memakai nilai #fbfdfb.
+*/
 :root {
-  --bg: #fbfdfb;
+  --bg: #f5f5f5;
   --sage: #a8c3a7;
   --sage-dark: #7f9f87;
   --forest: #4b5945;
@@ -14,33 +22,44 @@
   --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* === RESET & GAYA DASAR === */
+/* === 3. RESET & GAYA DASAR === */
+
+/* '*' (Universal Selector) memilih SEMUA elemen di halaman. */
+/* Ini adalah "CSS Reset" sederhana untuk konsistensi di semua browser. */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  box-sizing: border-box; /* Cara browser menghitung lebar/tinggi jadi lebih mudah */
+  margin: 0;            /* Hapus margin bawaan */
+  padding: 0;           /* Hapus padding bawaan */
 }
 
+/* Mengatur elemen <html> */
 html {
+  /* Membuat scroll (saat klik anchor link) jadi mulus/animasi */
   scroll-behavior: smooth;
+  /* Saat scroll ke ID (misal #home), beri jarak 80px dari atas.
+     Ini penting agar konten tidak tertutup Navbar yang 'sticky'. */
   scroll-padding-top: 80px;
 }
 
+/* Mengatur <body> (seluruh konten halaman) */
 body {
-  font-family: "Poppins", sans-serif;
-  background-color: var(--bg);
-  color: var(--ink);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
+  font-family: "Poppins", sans-serif; /* Font utama */
+  background-color: var(--bg);        /* Latar belakang dari variabel */
+  color: var(--ink);                  /* Warna teks dari variabel */
+  -webkit-font-smoothing: antialiased; /* Trik agar font terlihat lebih halus */
+  -moz-osx-font-smoothing: grayscale;   /* di browser WebKit (Chrome/Safari) */
+  line-height: 1.6;                   /* Jarak antar baris teks */
 }
 
+/* Class '.container' dipakai di banyak komponen (Home, Footer, dll)
+   untuk membatasi lebar konten agar tidak terlalu lebar di layar besar
+   dan tetap rapi di tengah. */
 .container {
   width: min(1150px, 92%);
-  margin: 0 auto;
+  margin: 0 auto; /* Shorthand untuk margin-left/right: auto */
 }
 
-/* === TOMBOL (BUTTON) === */
+/* === 4. TOMBOL (BUTTON) === */
 .btn {
   display: inline-block;
   padding: 10px 22px;
@@ -55,10 +74,11 @@ body {
 }
 
 .btn:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* Efek "mengangkat" saat di-hover */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Tombol utama (hijau dengan bayangan) */
 .btn-primary {
   background: var(--sage);
   color: white;
@@ -69,25 +89,31 @@ body {
   background: var(--sage-dark);
 }
 
-/* ... (Sisa gaya tombol sama) ... */
+/* Tombol outline (sebenarnya sama dengan primary di kode Anda) */
 .btn-outline {
   background-color: var(--sage);
   color: white;
 }
+
 .btn-outline:hover {
   background-color: var(--sage-dark);
 }
+
+/* Tombol "hantu" (transparan dengan border) */
 .btn-ghost {
   background: transparent;
   color: var(--forest);
   border-color: #d8e0d8;
 }
 
-/* === NAVBAR === */
+/* === 5. NAVBAR === */
+
+/* Pembungkus Navbar yang 'sticky' (menempel di atas) */
 .nav-wrap {
-  position: sticky;
+  position: sticky; /* Tetap di atas saat di-scroll */
   top: 0;
   z-index: 100;
+  /* Efek "frosty glass" / blur di belakang navbar */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   background: rgba(251, 253, 251, 0.85);
@@ -130,6 +156,7 @@ body {
   color: var(--sage-dark);
 }
 
+/* Tombol 'Hamburger' (hanya muncul di mobile) */
 .hamburger {
   display: none;
   flex-direction: column;
@@ -140,6 +167,7 @@ body {
   z-index: 10;
 }
 
+/* Garis-garis di dalam tombol hamburger */
 .hamburger span {
   display: block;
   width: 25px;
@@ -149,27 +177,31 @@ body {
   transition: all 0.3s;
 }
 
+/* Elemen ini hanya akan tampil di menu mobile */
 .nav-divider,
 .nav-mobile-actions {
   display: none;
 }
 
-/* =================================================================== */
-/* PENJELASAN 1: ANIMASI BARU YANG LEBIH "MANTAP"                    */
-/* =================================================================== */
+/* === 6. ANIMASI "REVEAL" SAAT SCROLL === */
 .reveal {
   opacity: 0;
-  transform: translateY(50px); /* Jarak slide-up diperjauh */
+  transform: translateY(50px); /* Mulai dari 50px di bawah */
   transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-  transition-delay: var(--delay, 0s); /* Menggunakan variabel CSS untuk jeda */
+  /* Ambil jeda dari variabel '--delay' di (inline style) App.jsx */
+  transition-delay: var(--delay, 0s);
 }
 
+/* Class 'is-visible' ditambahkan oleh JavaScript (IntersectionObserver)
+   saat elemen masuk ke layar */
 .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0); /* Kembali ke posisi normal (slide-up) */
 }
 
-/* === GAYA UMUM SECTION === */
+/* === 7. GAYA UMUM SECTION === */
+
+/* Judul di setiap section (Gallery, Map, Comments) */
 .section-head {
   text-align: center;
   margin-bottom: 40px;
@@ -177,6 +209,10 @@ body {
 
 .section-head h3 {
   font-family: "Playfair Display", serif;
+  /* 'clamp' adalah trik responsif:
+     Ukuran font minimal 1.875rem,
+     Ukuran ideal 5vw (5% dari lebar viewport),
+     Ukuran font maksimal 2.625rem. */
   font-size: clamp(1.875rem, 5vw, 2.625rem);
   font-weight: 700;
   margin-bottom: 8px;
@@ -189,26 +225,32 @@ body {
   font-size: clamp(0.9rem, 2.5vw, 1rem);
 }
 
-/* === ATURAN TINGGI "FULLSCREEN" (HANYA UNTUK DESKTOP) === */
+/* === 8. TRIK TINGGI "FULLSCREEN" (Hanya Desktop) === */
+/* Aturan ini membuat setiap section (Home, Gallery, dll)
+   memiliki tinggi pas 1 layar (dikurangi tinggi navbar).
+   HANYA aktif jika layar LEBIH LEBAR dari 981px. */
 @media (min-width: 981px) {
   .home-section,
   .gallery-section,
   .map-section,
   .comments-section {
+    /* 100vh = 100% tinggi viewport. 80px = tinggi navbar (kira-kira) */
     height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center; /* Kontennya jadi di tengah vertikal */
     padding: 0;
   }
 }
 
-/* === HOME SECTION === */
+/* === 9. HOME SECTION === */
 .home-section {
-  padding: 70px 0;
+  padding: 70px 0; /* Padding ini HANYA aktif di mobile (karena ditimpa di desktop) */
 }
+
 .home-inner {
   display: grid;
+  /* 2 kolom sama besar */
   grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 48px;
@@ -231,7 +273,7 @@ body {
 
 .hero-sub {
   font-size: clamp(1rem, 3vw, 1.125rem);
-  max-width: 45ch;
+  max-width: 45ch; /* Batasi lebar paragraf 45 karakter */
   margin-bottom: 24px;
 }
 
@@ -244,6 +286,7 @@ body {
   min-width: 180px;
 }
 
+/* Kartu gambar di sebelah kanan */
 .hero-card {
   padding: 16px;
   border-radius: 16px;
@@ -253,16 +296,16 @@ body {
 
 .card-image {
   width: 100%;
-  aspect-ratio: 4/3;
+  aspect-ratio: 4/3; /* Rasio 4:3 (lebar:tinggi) */
   border-radius: 8px;
-  background-image: url("/images/hero.jpg");
+  background-image: url("/images/hero-card.jpg");
   background-size: cover;
   background-position: center;
   transition: transform 0.4s ease-out;
 }
 
 .hero-card:hover .card-image {
-  transform: scale(1.05);
+  transform: scale(1.05); /* Efek zoom saat di-hover */
 }
 
 .card-accent {
@@ -272,71 +315,435 @@ body {
   font-size: 15px;
 }
 
-/* ... (Sisa kode CSS dari jawaban sebelumnya tetap sama persis) ... */
-/* === GALLERY SECTION === */
-.gallery-section .section-head { margin-bottom: 25px; }
-.slider-wrap { position: relative; max-width: 850px; margin: 0 auto; }
-.slider-viewport { overflow: hidden; border-radius: 16px; box-shadow: var(--shadow); background: var(--card); }
-.slider-track { display: flex; transition: transform 0.5s ease-in-out; }
-.slide-item { flex: 0 0 100%; }
-.slide-item img { width: 100%; aspect-ratio: 16/6.5; object-fit: cover; display: block; }
-.slide-item figcaption { padding: 16px 20px; border-top: 1px solid #f0f0f0; }
-.cap-title { font-weight: 700; font-size: 18px; }
-.cap-sub { color: var(--muted); }
-.slide-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.9); border: 1px solid #eee; width: 44px; height: 44px; border-radius: 50%; font-size: 28px; cursor: pointer; z-index: 10; }
-.slide-btn.left { left: -22px; }
-.slide-btn.right { right: -22px; }
-.dots { text-align: center; margin-top: 15px; }
-.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #d8e0d8; border: none; margin: 0 5px; cursor: pointer; transition: background 0.3s; }
-.dot.active { background: var(--sage-dark); }
-.map-frame { max-width: 850px; margin: 0 auto; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid #e8e8e8; }
-.map-frame iframe { width: 100%; height: 100%; border: 0; }
-.comments-section .container { max-width: 1000px; }
-.comment-form-wrapper { background-color: #eef3ee; padding: 24px; border-radius: 12px; max-width: 720px; margin: 18px auto 40px; }
-.comment-form { display: flex; flex-direction: column; gap: 16px; }
-.comment-form input, .comment-form textarea { background: #fff; border: 1px solid #dde2dd; box-shadow: none; padding: 12px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 15px; }
-.comment-form textarea { min-height: 100px; resize: vertical; }
-.comment-form-actions { display: flex; gap: 12px; justify-content: flex-end; }
-.comment-form-actions .btn-primary { background: var(--sage-dark); }
-.comment-form-actions .btn-ghost { background: #d8e0d8; color: var(--forest); border: none; }
-.comments-list-container { overflow: hidden; }
-.comments-list { display: flex; overflow-x: auto; gap: 20px; padding: 10px; scroll-snap-type: x mandatory; }
-.comment-card { flex: 0 0 48%; background: var(--card); padding: 20px; border: 1px solid #e8e8e8; border-radius: 12px; box-shadow: var(--shadow-light); position: relative; scroll-snap-align: start; }
-.comments-list::-webkit-scrollbar { height: 8px; }
-.comments-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-.comments-list::-webkit-scrollbar-thumb { background: var(--sage); border-radius: 10px; }
-.comments-list::-webkit-scrollbar-thumb:hover { background: var(--sage-dark); }
-.comment-card strong { font-weight: 600; font-size: 16px; }
-.comment-card .body { font-size: 15px; color: var(--muted); margin-top: 4px; font-style: italic; }
-.delete-comment-btn { position: absolute; top: 10px; right: 10px; background: #f1f1f1; border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 20px; line-height: 28px; text-align: center; cursor: pointer; color: var(--muted); opacity: 0.5; transition: all 0.2s; }
-.delete-comment-btn:hover { background: #e74c3c; color: white; opacity: 1; }
-.footer { padding: 48px 0 32px; background: #eef3ee; color: var(--forest); font-size: 15px; }
-.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px; }
-.footer-col h4, .footer-col h5 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 18px; margin-bottom: 12px; }
-.contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.socials { display: flex; gap: 12px; }
-.socials a { color: var(--forest); }
-.socials a:hover { color: var(--sage-dark); }
-.footer-divider { border: none; border-top: 1px solid #d8e0d8; margin: 32px 0 24px; }
-.copy { text-align: center; opacity: 0.8; font-size: 14px; }
-.account-btn { background: transparent; border: none; cursor: pointer; color: var(--ink); padding: 5px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-.account-btn:hover { background: #f0f0f0; }
-.account-menu-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 110; opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; }
-html.account-menu-open .account-menu-overlay { opacity: 1; visibility: visible; }
-.account-menu { position: fixed; top: 0; right: 0; width: 100%; max-width: 350px; height: 100%; background: var(--bg); z-index: 120; box-shadow: -5px 0 20px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s ease-in-out; display: flex; flex-direction: column; }
-html.account-menu-open .account-menu { transform: translateX(0); }
-.account-menu-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #e8e8e8; }
-.account-menu-header h3 { font-family: 'Playfair Display', serif; }
-.account-menu-header button { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--muted); }
-.account-menu-body { padding: 20px; flex-grow: 1; }
-.account-menu-body p { color: var(--muted); margin-bottom: 20px; }
-.account-menu-actions { display: flex; flex-direction: column; gap: 15px; }
-.account-menu-actions .btn { width: 100%; }
+/* === 10. GALLERY SECTION === */
+
+.gallery-section .section-head {
+  margin-bottom: 25px;
+}
+
+.slider-wrap {
+  position: relative;
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.slider-viewport {
+  overflow: hidden; /* Sembunyikan slide lain */
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  background: var(--card);
+}
+
+/* "Rel" yang berisi semua slide, digeser pakai 'transform' */
+.slider-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Tiap item slide (gambar + caption) */
+.slide-item {
+  flex: 0 0 100%; /* Tiap slide lebarnya 100% dari viewport */
+}
+
+.slide-item img {
+  width: 100%;
+  aspect-ratio: 16/6.5; /* Rasio gambar slider */
+  object-fit: cover; /* Agar gambar tidak gepeng */
+  display: block;
+}
+
+.slide-item figcaption {
+  padding: 16px 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cap-title {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.cap-sub {
+  color: var(--muted);
+}
+
+/* Tombol panah kiri/kanan */
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #eee;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.slide-btn.left {
+  left: -22px; /* Setengah tombol keluar area */
+}
+
+.slide-btn.right {
+  right: -22px; /* Setengah tombol keluar area */
+}
+
+/* (Style untuk .dots tidak terpakai di kode React Anda) */
+.dots {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d8e0d8;
+  border: none;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.dot.active {
+  background: var(--sage-dark);
+}
+
+/* === 11. MAP SECTION === */
+
+/* Pembungkus iframe Google Maps */
+.map-frame {
+  max-width: 850px;
+  margin: 0 auto;
+  aspect-ratio: 16/9; /* Rasio 16:9 */
+  border-radius: 16px;
+  overflow: hidden; /* Potong sudut iframe agar rounded */
+  box-shadow: var(--shadow);
+  border: 1px solid #e8e8e8;
+}
+
+.map-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* === 12. COMMENTS SECTION === */
+
+.comments-section .container {
+  max-width: 1000px;
+}
+
+/* Kotak form komentar */
+.comment-form-wrapper {
+  background-color: #eef3ee; /* Hijau sangat muda */
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 720px;
+  margin: 18px auto 40px;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comment-form input,
+.comment-form textarea {
+  background: #fff;
+  border: 1px solid #dde2dd;
+  box-shadow: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+}
+
+.comment-form textarea {
+  min-height: 100px;
+  resize: vertical; /* Boleh di-resize vertikal, tidak horizontal */
+}
+
+/* Tombol KIRIM dan RESET */
+.comment-form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end; /* Ratakan ke kanan */
+}
+
+.comment-form-actions .btn-primary {
+  background: var(--sage-dark);
+}
+
+.comment-form-actions .btn-ghost {
+  background: #d8e0d8;
+  color: var(--forest);
+  border: none;
+}
+
+/* Daftar komentar (horizontal scroll) */
+.comments-list-container {
+  overflow: hidden;
+}
+
+.comments-list {
+  display: flex;
+  overflow-x: auto; /* Kunci horizontal scroll */
+  gap: 20px;
+  padding: 10px;
+  scroll-snap-type: x mandatory; /* Scroll akan "nempel" ke item */
+}
+
+/* Kartu tiap komentar */
+.comment-card {
+  flex: 0 0 48%; /* Lebar tiap kartu (di desktop) */
+  background: var(--card);
+  padding: 20px;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  box-shadow: var(--shadow-light);
+  position: relative;
+  scroll-snap-align: start; /* Titik "nempel" scroll */
+}
+
+/* Styling scrollbar (hanya di browser WebKit/Chrome/Safari) */
+.comments-list::-webkit-scrollbar {
+  height: 8px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+  background: var(--sage);
+  border-radius: 10px;
+}
+
+.comments-list::-webkit-scrollbar-thumb:hover {
+  background: var(--sage-dark);
+}
+
+.comment-card strong {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.comment-card .body {
+  font-size: 15px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Tombol hapus (X) */
+.delete-comment-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f1f1f1;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--muted);
+  opacity: 0.5; /* Transparan sedikit */
+  transition: all 0.2s;
+}
+
+.delete-comment-btn:hover {
+  background: #e74c3c; /* Warna merah saat di-hover */
+  color: white;
+  opacity: 1;
+}
+
+/* === 13. FOOTER === */
+.footer {
+  padding: 48px 0 32px;
+  background: #eef3ee; /* Warna hijau sangat muda (sama dg form) */
+  color: var(--forest);
+  font-size: 15px;
+}
+
+.footer-grid {
+  display: grid;
+  /* Grid responsif:
+     Otomatis paskan kolom. Tiap kolom minimal 250px.
+     Jika muat, bagi rata (1fr). */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 32px;
+}
+
+.footer-col h4,
+.footer-col h5 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.socials {
+  display: flex;
+  gap: 12px;
+}
+
+.socials a {
+  color: var(--forest);
+}
+
+.socials a:hover {
+  color: var(--sage-dark);
+}
+
+/* Garis pemisah di atas copyright */
+.footer-divider {
+  border: none;
+  border-top: 1px solid #d8e0d8;
+  margin: 32px 0 24px;
+}
+
+/* Teks copyright */
+.copy {
+  text-align: center;
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+/* === 14. MENU AKUN (Dropdown/Sidebar) === */
+
+/* Tombol ikon User di Navbar */
+.account-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.account-btn:hover {
+  background: #f0f0f0;
+}
+
+/* Latar belakang gelap saat menu akun terbuka */
+.account-menu-overlay {
+  position: fixed;
+  inset: 0; /* Shorthand untuk top/bottom/left/right: 0 */
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 110;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+/* Ditampilkan saat <html> punya class 'account-menu-open' (dari JS) */
+html.account-menu-open .account-menu-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Sidebar menu akun */
+.account-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 350px;
+  height: 100%;
+  background: var(--bg);
+  z-index: 120;
+  box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+  transform: translateX(100%); /* Sembunyi di kanan */
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Muncul saat <html> punya class 'account-menu-open' */
+html.account-menu-open .account-menu {
+  transform: translateX(0); /* Geser ke posisi normal */
+}
+
+.account-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.account-menu-header h3 {
+  font-family: 'Playfair Display', serif;
+}
+
+.account-menu-header button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.account-menu-body {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.account-menu-body p {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.account-menu-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.account-menu-actions .btn {
+  width: 100%;
+}
+
+
+/* === 15. MEDIA QUERY (Gaya Responsif Mobile) === */
+/* Aturan di sini HANYA aktif jika lebar layar 768px ATAU LEBIH KECIL */
 
 @media (max-width: 768px) {
-  .nav-actions-desktop { display: none; }
-  .hamburger { display: flex; }
-  .nav-links { display: none; }
+
+  /* Sembunyikan tombol akun desktop */
+  .nav-actions-desktop {
+    display: none;
+  }
+
+  /* Tampilkan tombol hamburger */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Sembunyikan link nav desktop */
+  .nav-links {
+    display: none;
+  }
+
+  /* Style untuk menu mobile saat terbuka */
   .nav-open .nav-links {
     position: fixed;
     inset: 70px 12px auto 12px;
@@ -350,23 +757,95 @@ html.account-menu-open .account-menu { transform: translateX(0); }
     box-shadow: var(--shadow);
     animation: fadeIn 0.3s ease-out;
   }
+
+  /* Animasi menu mobile */
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-  .nav-divider { display: block; height: 1px; background-color: #e8e8e8; margin: 10px 0; }
-  .nav-mobile-actions { display: flex; gap: 10px; justify-content: center; }
-  .nav-mobile-actions .btn { width: 100%; }
-  .nav-open .hamburger span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-  .nav-open .hamburger span:nth-child(2) { opacity: 0; }
-  .nav-open .hamburger span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
-  section { padding: 60px 0; }
-  .home-inner { grid-template-columns: 1fr; text-align: center; gap: 30px; }
-  .hero-card { order: -1; }
-  .hero-sub { margin: 0 auto 24px; }
-  .hero-cta { justify-content: center; }
-  .slide-btn { display: none; }
-  .comment-card { flex: 0 0 85%; scroll-snap-align: center; }
-  .footer-grid { text-align: center; }
-  .contact-item, .socials { justify-content: center; }
+
+  /* Garis pemisah di menu mobile */
+  .nav-divider {
+    display: block;
+    height: 1px;
+    background-color: #e8e8e8;
+    margin: 10px 0;
+  }
+
+  /* Tombol Sign In/Up di menu mobile */
+  .nav-mobile-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .nav-mobile-actions .btn {
+    width: 100%;
+  }
+
+  /* Animasi tombol hamburger menjadi 'X' */
+  .nav-open .hamburger span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .nav-open .hamburger span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-open .hamburger span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+
+  /* Beri padding di semua section (kecuali Home) */
+  section {
+    padding: 60px 0;
+  }
+
+  /* Ubah layout Home jadi 1 kolom di mobile */
+  .home-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 30px;
+  }
+
+  /* Pindahkan kartu gambar ke atas teks di mobile */
+  .hero-card {
+    order: -1;
+  }
+
+  .hero-sub {
+    margin: 0 auto 24px;
+  }
+
+  /* Tombol CTA jadi di tengah */
+  .hero-cta {
+    justify-content: center;
+  }
+
+  /* Sembunyikan tombol panah slider di mobile */
+  .slide-btn {
+    display: none;
+  }
+
+  /* Buat kartu komentar lebih lebar di mobile */
+  .comment-card {
+    flex: 0 0 85%;
+    scroll-snap-align: center;
+  }
+
+  /* Buat footer jadi rata tengah di mobile */
+  .footer-grid {
+    text-align: center;
+  }
+
+  .contact-item,
+  .socials {
+    justify-content: center;
+  }
 }
