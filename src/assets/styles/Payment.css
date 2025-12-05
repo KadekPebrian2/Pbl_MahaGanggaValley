@@ -172,7 +172,7 @@
   flex: 1.2; /* Lebih lebar (60%) untuk visual */
   position: relative;
   /* Pastikan gambar ini ada, atau ganti dengan gambar lain */
-  background-image: url('/images/Auth.png'); 
+  background-image: url('/images/auth.png'); 
   background-size: cover;
   background-position: center;
   

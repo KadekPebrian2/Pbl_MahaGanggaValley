@@ -5,7 +5,7 @@ import "../assets/styles/Booking.css";
 
 export default function Booking() {
   const navigate = useNavigate();
-  const TICKET_PRICE = 50000; 
+  const TICKET_PRICE = 15000; 
 
   // --- STATE ---
   const [qty, setQty] = useState(1);
