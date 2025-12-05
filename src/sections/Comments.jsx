@@ -1,166 +1,168 @@
 // src/sections/Comments.jsx
-
-// Kita butuh 'useEffect' (untuk load/save data) dan 'useState' (untuk data form & list)
 import React, { useEffect, useState } from "react";
 
+// --- KOMPONEN IKON BINTANG ---
+const StarIcon = ({ filled, onClick, size = 24 }) => (
+  <svg
+    onClick={onClick}
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill={filled ? "#ffc107" : "#e4e5e9"}
+    stroke={filled ? "#ffc107" : "#cbd5e1"}
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ cursor: onClick ? "pointer" : "default", transition: "0.2s" }}
+  >
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
 export default function Comments() {
-  
-  // --- STATE ---
-  
-  // State 'comments' (bentuknya array) untuk menyimpan DAFTAR komentar.
   const [comments, setComments] = useState([]);
-  
-  // State 'form' (bentuknya objek) untuk menyimpan NILAI INPUT dari form
-  // (Nama dan Teks Komentar). Ini disebut "Controlled Component".
-  const [form, setForm] = useState({ name: "", text: "" });
+  const [form, setForm] = useState({ name: "", text: "", rating: 0 });
 
-  // --- EFFECTS (untuk localStorage) ---
-
-  // Efek ini berjalan HANYA SATU KALI saat komponen pertama kali muncul
-  // (karena dependency array-nya kosong: []).
-  // Tugasnya: MEMBACA data dari localStorage.
+  // Load Data
   useEffect(() => {
-    // Ambil data dari localStorage dengan kunci "mg_comments"
-    const savedComments = localStorage.getItem("mg_comments");
-    // Jika ada data yang tersimpan...
-    if (savedComments) {
-      // Ubah data (yang tadinya string JSON) kembali menjadi array/objek JavaScript
-      // lalu simpan ke dalam state 'comments'.
-      setComments(JSON.parse(savedComments));
-    }
-  }, []); // <-- Array kosong, berarti "hanya jalan sekali saat mount"
+    const saved = localStorage.getItem("mg_comments");
+    if (saved) setComments(JSON.parse(saved));
+  }, []);
 
-  // Efek ini berjalan SETIAP KALI state 'comments' BERUBAH
-  // (karena dependency array-nya: [comments]).
-  // Tugasnya: MENYIMPAN data ke localStorage.
+  // Save Data
   useEffect(() => {
-    // Simpan state 'comments' ke localStorage.
-    // 'JSON.stringify' mengubah array/objek JavaScript menjadi string
-    // karena localStorage hanya bisa menyimpan string.
     localStorage.setItem("mg_comments", JSON.stringify(comments));
-  }, [comments]); // <-- Array berisi 'comments', berarti "jalan tiap 'comments' berubah"
+  }, [comments]);
 
-  // --- FUNCTIONS (Handler) ---
+  // Hitung Rata-rata Rating
+  const averageRating =
+    comments.length > 0
+      ? (comments.reduce((acc, curr) => acc + (curr.rating || 5), 0) / comments.length).toFixed(1)
+      : "0.0";
 
-  // Fungsi ini dipanggil saat form di-submit
-  const handleSubmit = (e) => {
-    // Mencegah halaman me-refresh (perilaku default form HTML)
-    e.preventDefault();
-    
-    // Validasi sederhana: jangan kirim jika teks komentar kosong
-    if (!form.text.trim()) return; 
-
-    // Update state 'comments'
-    // Ini adalah pola "immutable update":
-    // 1. Buat komentar baru (objek { name, text })
-    // 2. Buat array BARU yang berisi [komentar_baru, ...semua_komentar_lama]
-    // Ini akan menaruh komentar baru di PALING ATAS daftar.
-    setComments([{ name: form.name, text: form.text }, ...comments]);
-    
-    // Setelah kirim, kosongkan kembali input form
-    setForm({ name: "", text: "" });
+  // Handlers
+  const handleInput = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Fungsi ini dipanggil saat tombol hapus (X) diklik
-  const removeComment = (indexToDelete) => {
-    // Tampilkan kotak konfirmasi
-    if (window.confirm("Apakah Anda yakin ingin menghapus komentar ini?")) {
-      // Buat array baru dengan "menyaring" (filter) komentar
-      // Kita HANYA AKAN simpan komentar yang 'index'-nya TIDAK SAMA DENGAN 'indexToDelete'
-      const updatedComments = comments.filter(
-        (_, index) => index !== indexToDelete
-      );
-      // Simpan array baru tersebut sebagai state
-      setComments(updatedComments);
+  const handleRating = (val) => {
+    setForm({ ...form, rating: val });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.text.trim()) return;
+
+    const newComment = {
+      ...form,
+      rating: form.rating === 0 ? 5 : form.rating,
+      date: new Date().toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" }),
+    };
+
+    setComments([newComment, ...comments]);
+    setForm({ name: "", text: "", rating: 0 });
+  };
+
+  const removeComment = (idx) => {
+    if (confirm("Hapus komentar ini?")) {
+      const newArr = [...comments];
+      newArr.splice(idx, 1);
+      setComments(newArr);
     }
   };
-
-  // --- RENDER (Tampilan JSX) ---
 
   return (
-    <section id="comments" className="comments-section">
+    <section id="comments" className="comments-section-clean">
       <div className="container">
-        {/* Judul Section */}
+        
+        {/* HEADER & TOTAL RATING */}
         <div className="section-head reveal">
-          <h3>Komentar Pengunjung</h3>
-          <p>Tinggalkan Pengalamanmu</p>
+          <h3>Apa Kata Mereka</h3>
+          <p>Cerita seru dari pengunjung Maha Gangga Valley.</p>
+          
+          <div className="total-rating-badge">
+            <span className="big-star">★</span>
+            <span className="avg-score">{averageRating}</span>
+            <span className="total-count">({comments.length} Ulasan)</span>
+          </div>
         </div>
 
-        {/* Wrapper Form Komentar */}
-        <div className="comment-form-wrapper reveal" style={{ '--delay': '0.2s' }}>
-          {/* Form di-handle oleh fungsi 'handleSubmit' saat di-submit */}
-          <form className="comment-form" onSubmit={handleSubmit}>
-            {/* Ini adalah "Controlled Input".
-              'value'-nya diatur oleh state 'form.name'.
-              'onChange'-nya akan meng-update state 'form.name' setiap kali diketik.
-            */}
-            <input
-              placeholder="Nama"
-              value={form.name}
-              // setForm({ ...form, ... }) adalah trik untuk update satu properti
-              // di dalam state objek, tanpa menghapus properti lainnya.
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-            <textarea
-              placeholder="Tambahkan Komentarmu...."
-              value={form.text}
-              onChange={(e) => setForm({ ...form, text: e.target.value })}
-              required // Atribut HTML5, form tidak bisa dikirim jika ini kosong
-            />
-            <div className="comment-form-actions">
-              {/* Tombol type="submit" akan memicu 'onSubmit' pada <form> */}
-              <button type="submit" className="btn btn-primary">
-                KIRIM
-              </button>
-              {/* Tombol type="button" HANYA tombol biasa, tidak memicu submit form */}
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={() => setForm({ name: "", text: "" })} // Reset form
-              >
-                RESET
-              </button>
+        {/* FORMULIR (POSISI DI ATAS) */}
+        <div className="form-box-clean reveal">
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <input
+                name="name"
+                className="input-clean"
+                placeholder="Nama Lengkap (Opsional)"
+                value={form.name}
+                onChange={handleInput}
+              />
             </div>
+
+            <div className="form-group">
+              <textarea
+                name="text"
+                className="textarea-clean"
+                placeholder="Tulis ulasan Anda di sini..."
+                required
+                value={form.text}
+                onChange={handleInput}
+              />
+            </div>
+
+            {/* Rating Bintang di Tengah Form */}
+            <div className="rating-center">
+              <span className="rating-label">Beri Rating:</span>
+              <div className="stars-wrapper-lg">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <StarIcon 
+                    key={s} 
+                    filled={s <= form.rating} 
+                    onClick={() => handleRating(s)} 
+                    size={32} 
+                  />
+                ))}
+              </div>
+            </div>
+
+            <button type="submit" className="btn btn-primary btn-submit-clean">
+              Kirim Komentar
+            </button>
           </form>
         </div>
 
-        {/* Wadah untuk Daftar Komentar */}
-        <div className="comments-list-container reveal" style={{ '--delay': '0.4s' }}>
-          
-          {/* --- Render Kondisional (Conditional Rendering) --- */}
-          {/* Jika panjang array comments adalah 0 (kosong)... */}
+        {/* LIST KOMENTAR (POSISI DI BAWAH - SWIPE SAMPING) */}
+        <div className="comments-slider reveal">
           {comments.length === 0 ? (
-            // ...tampilkan pesan ini.
-            <p className="muted" style={{ textAlign: "center" }}>
-              Belum ada komentar — jadilah yang pertama!
-            </p>
+            <div className="empty-message">Belum ada komentar. Jadilah yang pertama!</div>
           ) : (
-            // ...JIKA TIDAK, tampilkan daftar komentar:
-            <div className="comments-list">
-              {/* Looping (mapping) array 'comments'.
-                Untuk setiap 'comment' di dalam array, render satu <article>.
-              */}
-              {comments.map((comment, index) => (
-                <article key={index} className="comment-card">
-                  {/* Tombol Hapus */}
-                  <button
-                    className="delete-comment-btn"
-                    // Kita pakai arrow function () => ... di sini
-                    // agar 'removeComment(index)' HANYA dipanggil saat di-klik,
-                    // bukan saat render.
-                    onClick={() => removeComment(index)}
-                    aria-label="Hapus komentar"
-                  >
-                    ×
-                  </button>
-                  {/* Tampilkan nama. Jika nama kosong, tampilkan "Pengunjung" */}
-                  <strong>{comment.name.trim() || "Pengunjung"}</strong>
-                  <p className="body">"{comment.text}"</p>
-                </article>
-              ))}
-            </div>
+            comments.map((c, i) => (
+              <div key={i} className="comment-card-original">
+                <button className="btn-del" onClick={() => removeComment(i)}>&times;</button>
+                
+                <div className="card-header">
+                  <div className="avatar-circle">
+                    {c.name ? c.name.charAt(0).toUpperCase() : "A"}
+                  </div>
+                  <div>
+                    <strong className="user-name">{c.name || "Pengunjung"}</strong>
+                    <span className="comment-date">{c.date}</span>
+                  </div>
+                </div>
+
+                <div className="card-rating">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <StarIcon key={s} filled={s <= c.rating} size={14} />
+                  ))}
+                </div>
+
+                <p className="comment-text">"{c.text}"</p>
+              </div>
+            ))
           )}
         </div>
+
       </div>
     </section>
   );
