@@ -1,120 +1,124 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import React, { useEffect } from "react";
+import { Link, useForm, Head } from "@inertiajs/react";
+// Pastikan jalur CSS ini benar. Sesuaikan jika folder assets kamu berbeda.
+// Tanda '@' mengarah ke folder 'resources/js'
+import "@/assets/styles/Auth.css"; 
+
+// === Komponen Ikon (Sama seperti punya kamu) ===
+const IconArrowLeft = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>;
+const IconMail = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-10 7L2 7"></path></svg>;
+const IconLock = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>;
+const IconUser = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
-    });
+  // 1. Setup Form Data (Biar nyambung ke Database Laravel)
+  // Laravel butuh: Name, Email, Password, dan Password Confirmation
+  const { data, setData, post, processing, errors, reset } = useForm({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+  });
 
-    const submit = (e) => {
-        e.preventDefault();
-
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
+  useEffect(() => {
+    return () => {
+      reset("password", "password_confirmation");
     };
+  }, []);
 
-    return (
-        <GuestLayout>
-            <Head title="Register" />
+  // 2. Fungsi Submit ke Laravel
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Ini akan mengirim data ke jalur '/register' milik Laravel
+    post(route("register")); 
+  };
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
+  return (
+    <div className="auth-full-screen-wrapper">
+      <Head title="Sign Up" />
+      <div className="auth-background-image"></div>
+      
+      {/* Tombol Kembali (Menggunakan Link Inertia) */}
+      <Link href="/" className="auth-back-btn" aria-label="Kembali">
+        <IconArrowLeft />
+      </Link>
 
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
+      <div className="auth-center-form-container">
+        <div className="auth-title-block">
+          <span className="title-main">Sign Up</span>
+          <span className="title-sub">to Maha Gangga Valley</span>
+        </div>
 
-                    <InputError message={errors.name} className="mt-2" />
-                </div>
+        <form onSubmit={handleSubmit}>
+          
+          {/* === Input Nama (WAJIB ADA untuk Laravel) === */}
+          {/* Saya tambahkan ini agar sesuai standar database Laravel, desainnya sama persis */}
+          <div className="form-group-centered">
+            <input 
+                type="text" 
+                id="name" 
+                placeholder="Full Name" 
+                value={data.name}
+                onChange={(e) => setData("name", e.target.value)}
+                required 
+            />
+            <span className="input-icon-centered"><IconUser /></span>
+            {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
+          </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+          {/* Input Email */}
+          <div className="form-group-centered">
+            <input 
+                type="email" 
+                id="email" 
+                placeholder="Email" 
+                value={data.email}
+                onChange={(e) => setData("email", e.target.value)}
+                required 
+            />
+            <span className="input-icon-centered"><IconMail /></span>
+            {errors.email && <div className="text-red-500 text-xs mt-1">{errors.email}</div>}
+          </div>
+          
+          {/* Input Password */}
+          <div className="form-group-centered">
+            <input 
+                type="password" 
+                id="password" 
+                placeholder="Password" 
+                value={data.password}
+                onChange={(e) => setData("password", e.target.value)}
+                required 
+            />
+            <span className="input-icon-centered"><IconLock /></span>
+            {errors.password && <div className="text-red-500 text-xs mt-1">{errors.password}</div>}
+          </div>
 
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                    />
+          {/* === Input Konfirmasi Password (WAJIB ADA untuk Laravel) === */}
+          <div className="form-group-centered">
+            <input 
+                type="password" 
+                id="password_confirmation" 
+                placeholder="Confirm Password" 
+                value={data.password_confirmation}
+                onChange={(e) => setData("password_confirmation", e.target.value)}
+                required 
+            />
+            <span className="input-icon-centered"><IconLock /></span>
+            {errors.password_confirmation && <div className="text-red-500 text-xs mt-1">{errors.password_confirmation}</div>}
+          </div>
 
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
+          {/* Tombol Submit */}
+          <button type="submit" className="auth-submit-button-centered" disabled={processing}>
+            {processing ? "CREATING..." : "CREATE ACCOUNT"}
+          </button>
+        </form>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                        required
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
-                </div>
-            </form>
-        </GuestLayout>
-    );
+        {/* Link Pindah ke Login */}
+        <p className="auth-switch-link-bottom">
+          Already have an account? <Link href={route('login')}>Sign In</Link>
+        </p>
+      </div>
+    </div>
+  );
 }

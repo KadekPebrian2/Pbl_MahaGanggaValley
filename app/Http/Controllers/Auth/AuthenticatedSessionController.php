@@ -33,7 +33,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Gunakan garis miring '/' untuk kembali ke halaman awal
+        return redirect()->intended('/');
     }
 
     /**

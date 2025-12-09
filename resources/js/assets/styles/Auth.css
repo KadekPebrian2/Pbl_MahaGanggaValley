@@ -1,0 +1,282 @@
+/* src/assets/styles/Auth.css */
+
+/* === 1. VARIABEL LOKAL HALAMAN AUTH === */
+/* Variabel :root di sini akan "menimpa" (override) variabel
+   dari App.css, tapi HANYA untuk halaman yang me-load file Auth.css ini. */
+:root {
+  /* Warna Teks (dibuat putih agar kontras di atas gambar) */
+  --auth-text-light: #ffffff;
+  --auth-text-muted-light: rgba(255, 255, 255, 0.8);
+
+  /* Warna Form & Input (dibuat gelap & transparan untuk efek 'glass') */
+  --auth-form-bg: rgba(10, 20, 30, 0.25);
+  --auth-input-bg: rgba(255, 255, 255, 0.1);
+  --auth-input-border: rgba(255, 255, 255, 0.3);
+  --auth-input-focus: #a8c3a7; /* Warna sage saat input diklik */
+
+  /* Warna Tombol */
+  --auth-button-bg: #80997f;
+  --auth-button-hover: #6a8269;
+
+  /* Bayangan */
+  --auth-shadow-soft: rgba(0, 0, 0, 0.25) 0px 10px 30px;
+}
+
+/* === 2. LAYOUT DASAR HALAMAN AUTH === */
+
+/* Pembungkus utama halaman (Sign In / Sign Up) */
+.auth-full-screen-wrapper {
+  display: flex;
+  justify-content: center; /* Pusatkan konten horizontal */
+  align-items: center;     /* Pusatkan konten vertikal */
+  min-height: 100vh;     /* Tinggi minimal 1 layar penuh */
+  width: 100%;
+  position: relative;      /* Dibutuhkan untuk 'z-index' & elemen 'absolute' */
+  overflow: hidden;        /* Sembunyikan bagian gambar yang berlebih */
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Gambar latar belakang */
+.auth-background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/auth.png');
+  background-size: cover;
+  background-position: center-top;
+  /* z-index: 1 -> Paling belakang */
+  z-index: 1;
+}
+
+/* Lapisan (overlay) gelap di atas gambar */
+.auth-background-image::before {
+  content: '';
+  position: absolute;
+  inset: 0; /* (top/bottom/left/right: 0) */
+  background: rgba(0, 0, 0, 0.25);
+  /* z-index: 2 -> Di atas gambar, di bawah form */
+  z-index: 2;
+}
+
+/* Tombol panah kembali (Back) */
+.auth-back-btn {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  /* z-index: 10 -> Paling depan */
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--auth-text-light);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.auth-back-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
+}
+
+/* === 3. KARTU FORM (Glassmorphism) === */
+
+/* Kotak/Kartu yang berisi form di tengah */
+.auth-center-form-container {
+  position: relative;
+  /* z-index: 5 -> Di atas overlay, di bawah tombol 'Back' */
+  z-index: 5;
+  width: min(450px, 90%); /* Lebar 450px, tapi maks 90% di layar kecil */
+  background: var(--auth-form-bg); /* Latar belakang transparan */
+  
+  /* KUNCI EFEK GLASSMORPHISM:
+     Membuat latar belakang elemen ini menjadi buram (blur)
+     terhadap apa pun yang ada di belakangnya (yaitu gambar). */
+  backdrop-filter: blur(15px);
+  
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: var(--auth-shadow-soft);
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Border 'kaca' tipis */
+  text-align: center;
+  color: var(--auth-text-light); /* Teks default di dalam card jadi putih */
+}
+
+/* Blok judul (Sign In / to Maha Gangga Valley) */
+.auth-title-block {
+  margin-bottom: 35px;
+}
+
+.auth-title-block .title-main {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: var(--auth-text-light);
+  display: block;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.auth-title-block .title-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: var(--auth-text-muted-light);
+  display: block;
+  margin-top: 4px;
+}
+
+/* === 4. GAYA INPUT FORM === */
+
+/* Grup pembungkus input + ikon */
+.form-group-centered {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form-group-centered input {
+  width: 100%;
+  /* Padding kiri 50px untuk memberi ruang bagi ikon */
+  padding: 14px 15px 14px 50px;
+  border: 1px solid var(--auth-input-border);
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: var(--auth-input-bg);
+  color: var(--auth-text-light); /* Teks yang diketik jadi putih */
+}
+
+/* Teks placeholder (misal "Username") */
+.form-group-centered input::placeholder {
+  color: var(--auth-text-muted-light);
+}
+
+/* Efek saat input di-klik (focus) */
+.form-group-centered input:focus {
+  outline: none;
+  border-color: var(--auth-input-focus);
+  box-shadow: 0 0 0 3px rgba(168, 195, 167, 0.3);
+}
+
+/* Ikon di dalam input (User, Lock, Mail) */
+.input-icon-centered {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--auth-text-muted-light);
+}
+
+.input-icon-centered svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* === 5. TOMBOL SUBMIT & OPSI === */
+
+/* Tombol Submit Utama */
+.auth-submit-button-centered {
+  width: 100%;
+  padding: 15px 20px;
+  background-color: var(--auth-button-bg);
+  color: var(--auth-text-light);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 25px;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.auth-submit-button-centered:hover {
+  background-color: var(--auth-button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(128, 153, 127, 0.3);
+}
+
+/* Pembungkus "Remember Me" dan "Forgot Password" */
+.auth-options-centered {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: var(--auth-text-light);
+}
+
+.auth-options-centered .remember-me-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.auth-options-centered .remember-me-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--auth-button-bg); /* Ubah warna centang */
+}
+
+.auth-options-centered a {
+  color: var(--auth-text-muted-light);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-options-centered a:hover {
+  color: var(--auth-text-light);
+  text-decoration: underline;
+}
+
+/* Link di paling bawah (Sign Up / Sign In) */
+.auth-switch-link-bottom {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: var(--auth-text-muted-light);
+}
+
+.auth-switch-link-bottom a {
+  color: var(--auth-text-light);
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+/* === 6. MEDIA QUERY (Responsif Mobile) === */
+/* Aturan ini HANYA aktif jika lebar layar 768px ATAU LEBIH KECIL */
+
+@media (max-width: 768px) {
+  
+  /* Pindahkan tombol 'Back' agar tidak terlalu di pojok */
+  .auth-back-btn {
+    top: 20px;
+    left: 20px;
+  }
+
+  /* Buat kartu form sedikit lebih lebar dan padding lebih kecil */
+  .auth-center-form-container {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  .auth-title-block {
+    margin-bottom: 25px;
+  }
+
+  /* Kecilkan judul utama di mobile */
+  .auth-title-block .title-main {
+    font-size: 1.9rem;
+  }
+
+  /* Ubah layout "Remember Me" & "Forgot" jadi tumpukan ke bawah */
+  .auth-options-centered {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
