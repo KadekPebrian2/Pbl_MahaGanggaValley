@@ -5,7 +5,7 @@ import AppLayout from '@/Layouts/AppLayout';
 
 // Pastikan jalur CSS ini benar sesuai posisi folder kamu di resources/js
 // Jika assets ada di resources/js/assets, maka path ini sudah benar.
-import "../assets/styles/Payment.css"; 
+// import "../assets/styles/Payment.css"; 
 
 // 2. Terima data 'bookingData' sebagai props (Bukan location.state lagi)
 export default function Payment({ bookingData }) {
@@ -54,7 +54,7 @@ export default function Payment({ bookingData }) {
     // Kita gunakan router.post untuk mengirim data + file ke rute '/success' (atau endpoint API nanti)
     // Catatan: Di Inertia, upload file otomatis dihandle jika kita kirim object data
     
-    router.post("/success", {
+    router.post("/payment-confirm", {
       bookingData: bookingData,
       proofFile: proofFile, // File bukti transfer
     });
@@ -93,7 +93,7 @@ export default function Payment({ bookingData }) {
             <div className="summary-total">
               <span>Total Tagihan</span>
               {/* Gunakan optional chaining (?.) jaga-jaga kalau datanya undefined */}
-              <span>Rp {bookingData.totalPrice?.toLocaleString("id-ID")}</span>
+              <span>Rp. {Number(bookingData.total_price).toLocaleString("id-ID")}</span>
             </div>
           </div>
 

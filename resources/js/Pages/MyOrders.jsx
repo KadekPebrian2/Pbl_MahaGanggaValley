@@ -1,37 +1,34 @@
-// resources/js/Pages/MyOrders.jsx
-
 import React, { useState } from "react";
-// 1. GANTI IMPORT: Pakai Link dan Head dari Inertia
 import { Link, Head } from "@inertiajs/react"; 
-// 2. IMPORT LAYOUT: Supaya Navbar & Footer muncul
 import AppLayout from "@/Layouts/AppLayout"; 
 
-// 3. CSS PATH: Gunakan '@' yang mengarah ke resources/js
-// Pastikan file MyOrders.css kamu ada di resources/js/assets/styles/
-import "@/assets/styles/MyOrders.css"; 
+// 1. TERIMA PROPS 'bookings' DARI CONTROLLER
+export default function MyOrders({ bookings }) {
+  
+  // Kita gunakan data dari props 'bookings' sebagai data utama
+  // Jika bookings null/undefined, kita pakai array kosong [] biar aman
+  const allOrders = bookings || []; 
 
-export default function MyOrders() {
-  // === DATA KOSONG (SESUAI PERMINTAAN) ===
-  const allOrders = []; 
-
-  // State untuk Tab Filter (Tetap disiapkan logikanya)
+  // State untuk Tab Filter
   const [filter, setFilter] = useState("all");
 
-  // Logika Filter
+  // Logika Filter (Sesuai status di database: 'Pending', 'Paid', dll)
   const filteredOrders = allOrders.filter(order => {
     if (filter === "all") return true;
-    return order.status === filter;
+    
+    // Sesuaikan dengan status database kamu: 'Pending' atau 'Paid'
+    if (filter === 'pending') return order.status === 'Pending';
+    if (filter === 'success') return order.status === 'Paid';
+    
+    return true;
   });
 
   return (
-    // 4. BUNGKUS DENGAN APP LAYOUT
     <AppLayout>
-      {/* Mengatur Judul Tab Browser */}
       <Head title="Riwayat Pesanan" />
 
       <div className="my-orders-section">
         
-        {/* Header */}
         <div className="orders-header">
           <h2>Riwayat Pesanan</h2>
           <p>Pantau status tiket dan transaksi Anda.</p>
@@ -63,16 +60,24 @@ export default function MyOrders() {
         <div className="orders-list">
           {filteredOrders.length > 0 ? (
             filteredOrders.map((order) => (
-              <div key={order.id} className={`order-card ${order.status}`}>
+              <div key={order.id} className={`order-card ${order.status.toLowerCase()}`}>
                 <div className="order-info">
                   <span className="order-id">#{order.id}</span>
-                  <span className="order-name">{order.item}</span>
+                  <span className="order-name">Tiket Masuk ({order.qty} Org)</span>
+                  
+                  {/* Format Tanggal */}
                   <span className="order-date">📅 {order.date}</span>
                 </div>
+                
                 <div className="order-meta">
-                  <span className="order-price">Rp {order.total.toLocaleString("id-ID")}</span>
-                  <span className={`status-badge ${order.status}`}>
-                    {order.status}
+                  {/* Format Harga */}
+                  <span className="order-price">
+                    Rp {Number(order.total_price).toLocaleString("id-ID")}
+                  </span>
+                  
+                  {/* Badge Status */}
+                  <span className={`status-badge ${order.status.toLowerCase()}`}>
+                    {order.status === 'Paid' ? 'Lunas' : order.status}
                   </span>
                 </div>
               </div>
@@ -89,7 +94,6 @@ export default function MyOrders() {
                 Yuk, pesan tiket liburanmu sekarang!
               </p>
               
-              {/* 5. GANTI PROP: 'to' menjadi 'href' */}
               <Link href="/booking" className="btn btn-primary" style={{marginTop:'15px', display:'inline-block'}}>
                 Pesan Tiket Baru
               </Link>
