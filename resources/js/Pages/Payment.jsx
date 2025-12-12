@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // 1. Ganti import library ke Inertia
 import { Head, Link, router } from "@inertiajs/react";
 import AppLayout from '@/Layouts/AppLayout';
+import '../../css/Payment.css';
 
 // Pastikan jalur CSS ini benar sesuai posisi folder kamu di resources/js
 // Jika assets ada di resources/js/assets, maka path ini sudah benar.

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, Head } from "@inertiajs/react"; 
 import AppLayout from "@/Layouts/AppLayout"; 
+import '../../css/MyOrders.css';
 
 // 1. TERIMA PROPS 'bookings' DARI CONTROLLER
 export default function MyOrders({ bookings }) {

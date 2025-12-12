@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\AdminController;
 
 // 1. Rute Halaman Depan (Home)
 Route::get('/', function () {
@@ -57,6 +58,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+});
+
+
+// === AREA KHUSUS ADMIN ===
+// middleware(['auth']): Wajib Login
+// prefix('admin'): Semua URL di dalam sini otomatis ada awalan '/admin'
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    
+    // URL: localhost/admin/dashboard
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+    // Nanti langkah selanjutnya kita tambah route Order, Gallery, Review di sini...
 });
 
 require __DIR__ . '/auth.php';
+

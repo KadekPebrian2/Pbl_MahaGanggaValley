@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 // 1. GANTI IMPORT: Pakai Inertia untuk Link, Head, dan Router
 import { Link, Head, router } from "@inertiajs/react";
 import AppLayout from '@/Layouts/AppLayout';
+import '../../css/Booking.css';
 
 export default function Booking() {
   const TICKET_PRICE = 15000;

@@ -5,7 +5,8 @@ import AppLayout from "@/Layouts/AppLayout"; // Agar Navbar & Footer muncul
 
 // 2. Import CSS (Pastikan file CSS sudah dipindah ke folder assets baru)
 // Tanda @ mengarah ke folder resources/js
-import "@/assets/styles/Success.css"; 
+// import "@/assets/styles/Success.css";
+import '../../css/Success.css'; 
 
 // Ikon Centang (SVG) - Tidak berubah
 const CheckIcon = () => (
