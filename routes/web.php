@@ -32,8 +32,7 @@ Route::get('/payment', [BookingController::class, 'showPayment'])
     ->name('payment')
     ->middleware(['auth']);
 
-// D. KONFIRMASI PEMBAYARAN (UPLOAD GAMBAR) <--- TAMBAHAN BARU DISINI
-// Ini jalur khusus untuk menerima file upload dari Payment.jsx
+// D. KONFIRMASI PEMBAYARAN (UPLOAD GAMBAR)
 Route::post('/payment-confirm', [BookingController::class, 'confirmPayment'])
     ->name('payment.confirm')
     ->middleware(['auth']);
@@ -48,24 +47,17 @@ Route::get('/my-orders', [BookingController::class, 'myOrders'])
     ->name('my-orders')
     ->middleware(['auth']);
 
-// 3. Rute Dashboard
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// (Bagian Dashboard User sudah dihapus disini) 🗑️
 
 // 4. Rute Profile
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
 });
 
-
 // === AREA KHUSUS ADMIN ===
-// middleware(['auth']): Wajib Login
-// prefix('admin'): Semua URL di dalam sini otomatis ada awalan '/admin'
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () { 
     
     // URL: localhost/admin/dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -74,4 +66,3 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-

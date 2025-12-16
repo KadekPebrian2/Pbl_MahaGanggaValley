@@ -33,8 +33,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Gunakan garis miring '/' untuk kembali ke halaman awal
-        return redirect()->intended('/');
+        // 1. Ambil Data User
+        $user = $request->user();
+
+        // 2. LOGIKA TEGAS (Hapus 'intended')
+        
+        // Jika ADMIN -> Paksa masuk ke Dashboard Admin
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // Jika USER BIASA -> Paksa masuk ke Home
+        return redirect()->route('home');
     }
 
     /**
