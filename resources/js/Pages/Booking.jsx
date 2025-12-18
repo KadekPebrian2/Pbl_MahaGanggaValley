@@ -91,7 +91,7 @@ export default function Booking() {
             <div className="form-group">
               <label className="form-label">Nomor WhatsApp</label>
               <input
-                type="tel" name="phone" className="form-input"
+                type="number" name="phone" className="form-input"
                 placeholder="0812xxxx" required
                 value={formData.phone} onChange={handleInput}
               />

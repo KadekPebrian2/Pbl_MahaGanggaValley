@@ -63,6 +63,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     // Nanti langkah selanjutnya kita tambah route Order, Gallery, Review di sini...
+    // 1. Halaman Daftar Pesanan
+    Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
+    
+    // 2. Aksi Terima Pembayaran (Approve)
+    Route::post('/orders/{id}/approve', [AdminController::class, 'approveOrder'])->name('admin.orders.approve');
+    
+    // 3. Aksi Tolak Pembayaran (Reject)
+    Route::post('/orders/{id}/reject', [AdminController::class, 'rejectOrder'])->name('admin.orders.reject');
 });
 
 require __DIR__ . '/auth.php';

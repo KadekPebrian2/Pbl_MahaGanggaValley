@@ -1,0 +1,209 @@
+/* resources/css/Orders.css */
+
+/* Layout Utama */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: 260px;
+    background-color: white;
+    border-right: 1px solid #eee;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-title {
+    color: #27ae60;
+    margin-bottom: 30px;
+    font-weight: 800;
+    font-size: 1.5rem;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #666;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    background-color: #f0fdf4;
+    color: #27ae60;
+}
+
+.nav-link.active {
+    background-color: #e8f5e9;
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.btn-logout {
+    text-align: left;
+    border: none;
+    background: none;
+    color: #e74c3c;
+    padding: 12px 15px;
+    cursor: pointer;
+    margin-top: auto; /* Dorong ke bawah */
+    font-weight: 600;
+}
+
+.btn-logout:hover {
+    background-color: #fef2f2;
+}
+
+/* Konten Utama */
+.admin-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header-title h1 {
+    font-size: 24px;
+    color: #333;
+    font-weight: 700;
+}
+
+.order-count {
+    color: #666;
+    background: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+}
+
+/* Tabel */
+.table-container {
+    background-color: white;
+    padding: 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    overflow: hidden; /* Agar sudut tumpul tabel terlihat */
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.orders-table th {
+    background-color: #f8f9fa;
+    color: #444;
+    font-weight: 600;
+    text-align: left;
+    padding: 18px 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.orders-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #555;
+    vertical-align: middle;
+}
+
+.orders-table tr:hover {
+    background-color: #fafafa;
+}
+
+/* Badge Status */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-confirmed {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* Link Foto & Tombol Aksi */
+.link-photo {
+    color: #27ae60;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link-photo:hover {
+    text-decoration: underline;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-approve, .btn-reject {
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.btn-approve {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.btn-approve:hover {
+    background-color: #27ae60;
+    color: white;
+}
+
+.btn-reject {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-reject:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.status-unpaid {
+    background-color: #e5e7eb; /* Abu-abu muda */
+    color: #374151; /* Teks abu-abu gelap */
+}

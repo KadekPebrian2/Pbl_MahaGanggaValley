@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-// Import Model dan Auth agar bisa dipakai
 use App\Models\Booking; 
 use Illuminate\Support\Facades\Auth; 
 
@@ -18,16 +17,18 @@ class BookingController extends Controller
         $data = $request->all();
 
         // B. Tambahkan ID User yang sedang login
-        // (Wajib ada karena di database kolom 'user_id' tidak boleh kosong)
         $data['user_id'] = Auth::id(); 
         
+        // --- PERBAIKAN 1: SET STATUS AWAL JADI 'unpaid' ---
+        // Artinya: User baru pesan tiket, tapi belum upload bukti bayar
+        $data['status'] = 'unpaid'; 
+        $data['payment_proof'] = null;
+        // --------------------------------------------------
+
         // C. Simpan ke Database MySQL
-        // Perintah ini akan membuat baris baru di tabel 'bookings'
         $booking = Booking::create($data);
 
         // D. Simpan ID Booking barusan ke SESSION
-        // Kita tidak menyimpan seluruh data lagi, cukup ID-nya saja (misal: ID 5)
-        // Tujuannya agar halaman Payment tahu: "Oh, kita mau bayar pesanan nomor 5"
         session(['current_booking_id' => $booking->id]);
 
         // E. Lanjut ke Halaman Pembayaran
@@ -35,33 +36,27 @@ class BookingController extends Controller
     }
 
     // 2. FUNGSI TAMPILKAN HALAMAN PAYMENT
-    // Dipanggil saat halaman /payment dibuka
     public function showPayment()
     {
-        // A. Cek Session: "Tadi user pesan nomor berapa ya?"
         $bookingId = session('current_booking_id');
 
-        // Kalau session kosong (user iseng buka link /payment tanpa booking dulu)
-        // Kita tendang balik ke Home biar tidak error
         if (!$bookingId) {
             return redirect('/');
         }
 
-        // B. Ambil Data Lengkap dari Database berdasarkan ID tadi
-        // SELECT * FROM bookings WHERE id = $bookingId
         $bookingData = Booking::find($bookingId);
 
-        // C. Kirim data asli dari Database ke Payment.jsx
         return Inertia::render('Payment', [
             'bookingData' => $bookingData
         ]);
     }
+
     // 3. KONFIRMASI PEMBAYARAN (UPLOAD BUKTI)
     public function confirmPayment(Request $request)
     {
-        // A. Validasi: Pastikan yang diupload adalah gambar
+        // A. Validasi
         $request->validate([
-            'proofFile' => 'required|image|max:2048', // Maksimal 2MB
+            'proofFile' => 'required|image|max:2048', 
         ]);
 
         // B. Ambil ID Booking dari Session
@@ -74,15 +69,17 @@ class BookingController extends Controller
 
         // C. Proses Upload Gambar
         if ($request->hasFile('proofFile')) {
-            // Simpan gambar ke folder 'public/storage/payment_proofs'
             $path = $request->file('proofFile')->store('payment_proofs', 'public');
             
             // Simpan alamat gambar ke Database
             $booking->payment_proof = $path;
         }
 
-        // D. Update Status jadi 'Paid' (atau Menunggu Konfirmasi)
-        $booking->status = 'Paid';
+        // --- PERBAIKAN 2: UBAH STATUS JADI 'pending' ---
+        // Artinya: User SUDAH bayar/upload, sekarang giliran Admin mengecek (Pending)
+        $booking->status = 'pending'; 
+        // -----------------------------------------------
+        
         $booking->save();
 
         // E. Hapus Session (karena transaksi selesai)
@@ -95,8 +92,6 @@ class BookingController extends Controller
     // 4. MENAMPILKAN RIWAYAT PESANAN
     public function myOrders()
     {
-        // Ambil semua booking milik user yang sedang login
-        // urutkan dari yang terbaru (latest)
         $bookings = Booking::where('user_id', Auth::id())
                             ->latest()
                             ->get();
