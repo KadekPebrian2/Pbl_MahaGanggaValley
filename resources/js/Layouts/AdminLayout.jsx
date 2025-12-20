@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
-// 👇 IMPORT CSS MANUAL DISINI
 import '../../css/Admin.css'; 
 
-export default function AdminLayout({ children }) {
+export default function AdminLayout({ children, headerTitle }) {
     const { url } = usePage(); 
 
     const menus = [
@@ -15,7 +14,7 @@ export default function AdminLayout({ children }) {
 
     return (
         <div className="admin-container">
-            {/* === SIDEBAR KIRI === */}
+            {/* SIDEBAR */}
             <aside className="admin-sidebar">
                 <div className="sidebar-header">
                     <h1 className="brand-logo">
@@ -28,7 +27,6 @@ export default function AdminLayout({ children }) {
                         <Link
                             key={index}
                             href={item.url}
-                            // Logika CSS Biasa: Kalau aktif tambah class 'active'
                             className={`menu-link ${url.startsWith(item.url) ? 'active' : ''}`}
                         >
                             <span>{item.icon}</span>
@@ -44,12 +42,16 @@ export default function AdminLayout({ children }) {
                 </nav>
             </aside>
 
-            {/* === KONTEN KANAN === */}
+            {/* MAIN CONTENT */}
             <main className="admin-content">
                 <header className="top-header">
                     <div>
-                        <h2 style={{fontSize: '24px', fontWeight: 'bold', margin: 0}}>Dashboard</h2>
-                        <p style={{color: '#6b7280', margin: 0}}>Pantau performa wisata hari ini.</p>
+                        <h2 style={{fontSize: '24px', fontWeight: 'bold', margin: 0}}>
+                            {headerTitle || 'Dashboard'}
+                        </h2>
+                        <p style={{color: '#6b7280', margin: 0}}>
+                            Panel Administrasi Wisata
+                        </p>
                     </div>
                     <div className="profile-badge">
                         <div className="avatar-circle">SA</div>
@@ -60,7 +62,6 @@ export default function AdminLayout({ children }) {
                     </div>
                 </header>
 
-                {/* Slot Halaman Anak */}
                 {children}
             </main>
         </div>

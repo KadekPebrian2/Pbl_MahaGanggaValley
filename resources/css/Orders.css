@@ -1,75 +1,115 @@
-/* resources/css/Orders.css */
+/* Import Font Premium: Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* Layout Utama */
-.admin-container {
-    display: flex;
-    min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f8f9fa;
+/* --- 1. RESET GLOBAL --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Sidebar */
+/* --- 2. LAYOUT UTAMA (SOLUSI BENTROK) --- */
+.admin-container {
+    /* Pakai !important biar menang lawan admin.css */
+    display: flex !important; 
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background-color: #f8faf8; 
+    color: #374151;
+    
+    /* Hapus jarak gaib di antara sidebar dan konten */
+    gap: 0 !important; 
+}
+
+/* --- 3. SIDEBAR (KIRI) --- */
 .admin-sidebar {
-    width: 260px;
-    background-color: white;
-    border-right: 1px solid #eee;
+    /* Paksa lebarnya tetap segini */
+    width: 260px !important;
+    flex-shrink: 0; 
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    
+    /* Ganti posisi dari fixed (admin.css) jadi sticky */
+    position: sticky !important; 
+    top: 0;
+    height: 100vh;
+    z-index: 50;
+    
     padding: 25px;
     display: flex;
     flex-direction: column;
 }
 
 .sidebar-title {
-    color: #27ae60;
-    margin-bottom: 30px;
+    color: #5D755B; 
+    margin-bottom: 35px;
     font-weight: 800;
-    font-size: 1.5rem;
-}
-
-.sidebar-nav {
+    font-size: 1.4rem;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 10px;
 }
 
+/* --- NAVIGATION LINKS --- */
 .nav-link {
     text-decoration: none;
-    color: #666;
+    color: #6b7280;
     padding: 12px 15px;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: 500;
-    transition: 0.3s;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .nav-link:hover {
-    background-color: #f0fdf4;
-    color: #27ae60;
+    background-color: #f1f5f1;
+    color: #5D755B;
 }
 
 .nav-link.active {
-    background-color: #e8f5e9;
-    color: #27ae60;
-    font-weight: bold;
+    background-color: #edf2ed;
+    color: #5D755B;
+    font-weight: 600;
 }
 
 .btn-logout {
+    margin-top: auto;
     text-align: left;
     border: none;
     background: none;
-    color: #e74c3c;
+    color: #ef4444;
     padding: 12px 15px;
     cursor: pointer;
-    margin-top: auto; /* Dorong ke bawah */
     font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .btn-logout:hover {
     background-color: #fef2f2;
 }
 
-/* Konten Utama */
+/* --- 4. KONTEN UTAMA (KANAN) --- */
 .admin-content {
-    flex: 1;
-    padding: 40px;
+    flex: 1; /* Mengisi sisa ruang */
+    
+    /* --- INI KUNCI PERBAIKANNYA --- */
+    /* Hapus margin 260px bawaan admin.css */
+    margin-left: 0 !important; 
+    
+    /* Padding dirapikan */
+    padding: 30px !important;  
+    
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 0;
 }
 
 .header-title {
@@ -81,129 +121,134 @@
 
 .header-title h1 {
     font-size: 24px;
-    color: #333;
+    color: #111827;
     font-weight: 700;
 }
 
-.order-count {
-    color: #666;
-    background: #fff;
-    padding: 5px 15px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    font-size: 0.9rem;
-}
-
-/* Tabel */
+/* --- 5. TABEL STYLING --- */
 .table-container {
     background-color: white;
-    padding: 0;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    overflow: hidden; /* Agar sudut tumpul tabel terlihat */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    border: 1px solid #e5e7eb;
+    overflow-x: auto; 
+    width: 100%;
 }
 
 .orders-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
+    font-size: 0.9rem;
+    white-space: nowrap; 
 }
 
 .orders-table th {
-    background-color: #f8f9fa;
-    color: #444;
-    font-weight: 600;
-    text-align: left;
-    padding: 18px 20px;
-    border-bottom: 2px solid #eee;
+    background-color: #f9fafb;
+    color: #111827;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    padding: 16px 20px;
+    border-bottom: 2px solid #e5e7eb;
+    text-align: left; 
 }
 
 .orders-table td {
-    padding: 18px 20px;
-    border-bottom: 1px solid #f0f0f0;
-    color: #555;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
     vertical-align: middle;
 }
 
-.orders-table tr:hover {
-    background-color: #fafafa;
+/* Perataan Tengah (ID, Status, Aksi, dll) */
+.orders-table th:nth-child(1), .orders-table td:nth-child(1), 
+.orders-table th:nth-child(4), .orders-table td:nth-child(4), 
+.orders-table th:nth-child(6), .orders-table td:nth-child(6), 
+.orders-table th:nth-child(7), .orders-table td:nth-child(7), 
+.orders-table th:nth-child(8), .orders-table td:nth-child(8)  
+{
+    text-align: center;
 }
 
-/* Badge Status */
-.status-badge {
-    padding: 6px 12px;
-    border-radius: 50px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: capitalize;
-    display: inline-block;
+/* Efek Hover Baris */
+.orders-table tbody tr:hover {
+    background-color: #fcfdfc;
 }
 
-.status-pending {
-    background-color: #fff3cd;
-    color: #856404;
+/* --- 6. KOMPONEN KECIL --- */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.status-confirmed {
-    background-color: #d1fae5;
-    color: #065f46;
-}
-
-.status-rejected {
-    background-color: #fee2e2;
-    color: #991b1b;
-}
-
-/* Link Foto & Tombol Aksi */
-.link-photo {
-    color: #27ae60;
-    text-decoration: none;
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #8FA38C 0%, #708a6d 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
 }
 
-.link-photo:hover {
-    text-decoration: underline;
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+}
+
+.user-name { font-weight: 600; color: #111827; }
+.user-email { font-size: 0.75rem; color: #9ca3af; }
+
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+}
+
+.status-unpaid { background-color: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
+.status-pending { background-color: #fffbeb; color: #b45309; border: 1px solid #fcd34d; }
+.status-confirmed { background-color: #edf2ed; color: #5D755B; border: 1px solid #dcebdc; }
+.status-rejected { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+.link-photo {
+    color: #5D755B;
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dashed #8FA38C;
 }
 
 .action-buttons {
     display: flex;
     gap: 8px;
+    justify-content: center;
 }
 
 .btn-approve, .btn-reject {
     border: none;
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 1rem;
     transition: 0.2s;
 }
 
-.btn-approve {
-    background-color: #d1fae5;
-    color: #065f46;
-}
-
-.btn-approve:hover {
-    background-color: #27ae60;
-    color: white;
-}
-
-.btn-reject {
-    background-color: #fee2e2;
-    color: #991b1b;
-}
-
-.btn-reject:hover {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.status-unpaid {
-    background-color: #e5e7eb; /* Abu-abu muda */
-    color: #374151; /* Teks abu-abu gelap */
-}
+.btn-approve { background-color: white; color: #5D755B; border: 1px solid #8FA38C; }
+.btn-approve:hover { background-color: #8FA38C; color: white; }
+.btn-reject { background-color: white; color: #ef4444; border: 1px solid #fee2e2; }
+.btn-reject:hover { background-color: #ef4444; color: white; }

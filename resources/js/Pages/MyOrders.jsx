@@ -3,25 +3,39 @@ import { Link, Head } from "@inertiajs/react";
 import AppLayout from "@/Layouts/AppLayout"; 
 import '../../css/MyOrders.css';
 
-// 1. TERIMA PROPS 'bookings' DARI CONTROLLER
 export default function MyOrders({ bookings }) {
   
-  // Kita gunakan data dari props 'bookings' sebagai data utama
-  // Jika bookings null/undefined, kita pakai array kosong [] biar aman
   const allOrders = bookings || []; 
-
-  // State untuk Tab Filter
   const [filter, setFilter] = useState("all");
 
-  // Logika Filter (Sesuai status di database: 'Pending', 'Paid', dll)
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+  };
+
+  // --- LOGIKA FILTER (DIPERBAIKI) ---
   const filteredOrders = allOrders.filter(order => {
-    if (filter === "all") return true;
+    const status = order.status ? order.status.toLowerCase() : 'unknown';
+
+    // 1. ATURAN MUTLAK: Buang yang 'unpaid' (Belum Bayar)
+    // Sesuai permintaan: anggap ini user iseng/cuma cek harga.
+    if (status === 'unpaid') {
+        return false; // HILANGKAN DARI SEMUA TAB
+    }
+
+    // 2. Logika Tab Navigasi
+    if (filter === "all") {
+        return true; // Tampilkan sisanya (Pending & Confirmed & Rejected)
+    }
     
-    // Sesuaikan dengan status database kamu: 'Pending' atau 'Paid'
-    if (filter === 'pending') return order.status === 'Pending';
-    if (filter === 'success') return order.status === 'Paid';
+    if (filter === 'waiting') {
+        return status === 'pending'; // Hanya yang sudah upload bukti
+    }
     
-    return true;
+    if (filter === 'success') {
+        return status === 'confirmed'; // Hanya yang lunas
+    }
+    
+    return false;
   });
 
   return (
@@ -35,7 +49,7 @@ export default function MyOrders({ bookings }) {
           <p>Pantau status tiket dan transaksi Anda.</p>
         </div>
 
-        {/* Tabs Filter */}
+        {/* --- TABS FILTER --- */}
         <div className="tabs-container">
           <button 
             className={`tab-btn ${filter === 'all' ? 'active' : ''}`} 
@@ -44,8 +58,8 @@ export default function MyOrders({ bookings }) {
             Semua
           </button>
           <button 
-            className={`tab-btn ${filter === 'pending' ? 'active' : ''}`} 
-            onClick={() => setFilter('pending')}
+            className={`tab-btn ${filter === 'waiting' ? 'active' : ''}`} 
+            onClick={() => setFilter('waiting')}
           >
             Menunggu Verifikasi
           </button>
@@ -57,42 +71,48 @@ export default function MyOrders({ bookings }) {
           </button>
         </div>
 
-        {/* List Pesanan */}
+        {/* --- LIST PESANAN --- */}
         <div className="orders-list">
           {filteredOrders.length > 0 ? (
-            filteredOrders.map((order) => (
-              <div key={order.id} className={`order-card ${order.status.toLowerCase()}`}>
-                <div className="order-info">
-                  <span className="order-id">#{order.id}</span>
-                  <span className="order-name">Tiket Masuk ({order.qty} Org)</span>
-                  
-                  {/* Format Tanggal */}
-                  <span className="order-date">📅 {order.date}</span>
-                </div>
+            filteredOrders.map((order) => {
+                const statusRaw = order.status ? order.status.toLowerCase() : 'unknown';
                 
-                <div className="order-meta">
-                  {/* Format Harga */}
-                  <span className="order-price">
-                    Rp {Number(order.total_price).toLocaleString("id-ID")}
-                  </span>
-                  
-                  {/* Badge Status */}
-                  <span className={`status-badge ${order.status.toLowerCase()}`}>
-                    {order.status === 'Paid' ? 'Lunas' : order.status}
-                  </span>
-                </div>
-              </div>
-            ))
+                let statusText = statusRaw;
+                if(statusRaw === 'confirmed') statusText = 'Lunas';
+                if(statusRaw === 'pending') statusText = 'Verifikasi Admin';
+                if(statusRaw === 'rejected') statusText = 'Ditolak';
+
+                return (
+                  <div key={order.id} className={`order-card ${statusRaw}`}>
+                    <div className="order-info">
+                      <span className="order-id">#{order.id}</span>
+                      <h4 style={{margin:'5px 0', color:'#111827'}}>Tiket Masuk ({order.qty} Org)</h4>
+                      
+                      <span className="order-date">📅 {order.date}</span>
+                    </div>
+                    
+                    <div className="order-meta">
+                      <span className="order-price">
+                        {formatRupiah(order.total_price)}
+                      </span>
+                      
+                      <span className={`status-badge status-${statusRaw}`}>
+                        {statusText}
+                      </span>
+                    </div>
+                  </div>
+                );
+            })
           ) : (
-            /* === TAMPILAN EMPTY STATE === */
+            /* --- TAMPILAN JIKA KOSONG --- */
             <div className="empty-state">
               <div className="empty-icon-circle">
                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               </div>
               <h3>Belum ada riwayat pesanan</h3>
               <p>
-                Anda belum melakukan transaksi apapun.<br/>
-                Yuk, pesan tiket liburanmu sekarang!
+                Pesanan yang belum dibayar tidak akan muncul di sini.<br/>
+                Silakan lakukan pemesanan baru.
               </p>
               
               <Link href="/booking" className="btn btn-primary" style={{marginTop:'15px', display:'inline-block'}}>

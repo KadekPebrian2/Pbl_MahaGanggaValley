@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// 1. GANTI IMPORT: Pakai Inertia untuk Link, Head, dan Router
 import { Link, Head, router } from "@inertiajs/react";
 import AppLayout from '@/Layouts/AppLayout';
 import '../../css/Booking.css';
@@ -17,6 +16,22 @@ export default function Booking() {
     address: ""
   });
 
+  // --- LOGIKA TANGGAL (MIN & MAX) ---
+  const today = new Date();
+  const nextMonth = new Date(today);
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+  // Helper untuk format YYYY-MM-DD
+  const formatDate = (date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  const minDate = formatDate(today);      // Hari ini
+  const maxDate = formatDate(nextMonth);  // 1 Bulan ke depan
+
   // Hitung Total Otomatis
   const totalPrice = qty * TICKET_PRICE;
 
@@ -27,9 +42,15 @@ export default function Booking() {
 
   // --- HANDLERS ---
   const handleQty = (operation) => {
-    setQty((prev) =>
-      operation === "inc" ? prev + 1 : Math.max(1, prev - 1)
-    );
+    setQty((prev) => {
+      if (operation === "inc") {
+        // Jika tambah, cek dulu apakah sudah 10? Kalau iya, stop di 10.
+        return Math.min(10, prev + 1); 
+      } else {
+        // Jika kurang, cek dulu apakah sudah 1? Kalau iya, stop di 1.
+        return Math.max(1, prev - 1);
+      }
+    });
   };
 
   const handleInput = (e) => {
@@ -39,17 +60,14 @@ export default function Booking() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 3. LOGIKA PINDAH HALAMAN (INERTIA WAY)
-    // Kita gunakan router.post untuk mengirim data ke halaman payment
     router.post('/booking-store', {
       ...formData,
       qty: qty,
-      total_price: totalPrice // Saran: gunakan snake_case biar cocok sama database nanti
+      total_price: totalPrice
     });
   };
 
   return (
-    // 4. WRAPPER LAYOUT: Agar Navbar dan Footer tetap muncul
     <AppLayout>
       <Head title="Booking Tiket" />
 
@@ -113,8 +131,14 @@ export default function Booking() {
               <div>
                 <label className="form-label">Tanggal</label>
                 <input
-                  type="date" name="date" className="form-input" required
-                  value={formData.date} onChange={handleInput}
+                  type="date" 
+                  name="date" 
+                  className="form-input" 
+                  required
+                  value={formData.date} 
+                  onChange={handleInput}
+                  min={minDate} // Gaboleh pilih hari kemarin
+                  max={maxDate} // Gaboleh lebih dari 1 bulan
                   style={{ height: "42px" }}
                 />
               </div>

@@ -8,17 +8,26 @@ use App\Models\Booking; // <--- WAJIB: Panggil Model Booking
 
 class AdminController extends Controller
 {
-    // --- 1. DASHBOARD (YANG SUDAH ANDA BUAT) ---
+    // --- 1. DASHBOARD ---
     public function dashboard()
     {
         $stats = [
-            'total_orders'   => Booking::count(),
+            // PERBAIKAN: Hitung total pesanan HANYA yang statusnya BUKAN 'unpaid'
+            'total_orders'   => Booking::where('status', '!=', 'unpaid')->count(),
+            
+            // Hitung yang pending (Sudah upload, butuh verifikasi)
             'pending_orders' => Booking::where('status', 'pending')->count(), 
-            // Pastikan penulisan status konsisten (pending/confirmed/rejected) di database
+            
+            // Hitung uang masuk (Hanya yang sudah confirmed)
             'revenue'        => Booking::where('status', 'confirmed')->sum('total_price') 
         ];
 
-        $recent_orders = Booking::latest()->limit(5)->get(); // Ambil 5 terbaru saja untuk dashboard
+        // PERBAIKAN: Ambil 5 pesanan terbaru yang BUKAN 'unpaid'
+        $recent_orders = Booking::with('user') // Tambah with('user') biar nama penampil di dashboard aman
+                                ->where('status', '!=', 'unpaid') 
+                                ->latest()
+                                ->limit(5)
+                                ->get();
 
         return Inertia::render('Admin/Dashboard', [
             'stats'  => $stats,
@@ -26,40 +35,36 @@ class AdminController extends Controller
         ]);
     }
 
-    // --- 2. HALAMAN DAFTAR PESANAN (BARU) ---
+    // --- 2. HALAMAN DAFTAR PESANAN ---
     public function orders()
     {
-        // Ambil SEMUA data booking
-        // with('user') -> Mengambil data nama user dari tabel users (Relasi)
-        // latest()     -> Urutkan dari yang paling baru
-        $bookings = Booking::with('user')->latest()->get();
+        
+        // Ambil data booking DIMANA status TIDAK SAMA DENGAN 'unpaid'
+        // Artinya: Pesanan yang baru isi form (unpaid) TIDAK AKAN MUNCUL disini.
+        $bookings = Booking::with('user')
+                            ->where('status', '!=', 'unpaid') // <--- FILTER PENTING
+                            ->latest()
+                            ->get();
 
-        // Kirim data ke file React: resources/js/Pages/Admin/Orders.jsx
         return Inertia::render('Admin/Orders', [
             'bookings' => $bookings
         ]);
     }
 
-    // --- 3. AKSI TERIMA PEMBAYARAN (BARU) ---
+    // --- 3. AKSI TERIMA PEMBAYARAN ---
     public function approveOrder($id)
     {
-        // Cari booking berdasarkan ID, kalau gak ketemu tampilkan error 404
         $booking = Booking::findOrFail($id);
-
-        // Ubah status menjadi 'confirmed' (Sesuai logika di Orders.jsx)
         $booking->status = 'confirmed';
         $booking->save();
 
-        // Kembali ke halaman sebelumnya (Reload data)
         return redirect()->back()->with('message', 'Pesanan berhasil disetujui!');
     }
 
-    // --- 4. AKSI TOLAK PEMBAYARAN (BARU) ---
+    // --- 4. AKSI TOLAK PEMBAYARAN ---
     public function rejectOrder($id)
     {
         $booking = Booking::findOrFail($id);
-
-        // Ubah status menjadi 'rejected'
         $booking->status = 'rejected';
         $booking->save();
 
