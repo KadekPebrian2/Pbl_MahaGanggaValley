@@ -1,46 +1,65 @@
-=== LAYOUT UTAMA ===
-.admin-container {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f3f4f6; /* Abu-abu muda */
-    font-family: sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-green: #98b89b; /* Hijau Sage */
+    --primary-dark: #5D755B;
+    --bg-color: #F5F7FA;
+    --text-dark: #1F2937;
+    --text-grey: #9CA3AF;
 }
 
-/* === SIDEBAR (KIRI) === */
-.admin-sidebar {
-    width: 260px;
-    background-color: #ffffff;
-    border-right: 1px solid #e5e7eb;
-    position: fixed;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 100;
-}
-
-.sidebar-header {
-    padding: 24px;
-}
-
-.brand-logo {
-    font-size: 1.5rem; /* 24px */
-    font-weight: bold;
-    color: #059669; /* Emerald Green */
-    display: flex;
-    align-items: center;
-    gap: 8px;
+body {
+    background-color: var(--bg-color);
+    font-family: 'Plus Jakarta Sans', sans-serif;
     margin: 0;
 }
 
+/* === LAYOUT UTAMA === */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* === SIDEBAR (BARU) === */
+.admin-sidebar {
+    width: 280px;
+    background-color: #ffffff;
+    position: fixed;
+    height: 100vh; /* Full tinggi layar */
+    padding: 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* KUNCI: Dorong profil ke bawah */
+    border-right: 1px solid #eee;
+    z-index: 50;
+}
+
+/* Logo */
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    color: var(--primary-dark);
+}
+
+/* Menu */
+.menu-label {
+    font-size: 11px;
+    color: var(--text-grey);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
 .sidebar-menu {
-    padding: 0 16px;
-    margin-top: 10px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-/* Tombol Menu */
 .menu-link {
     display: flex;
     align-items: center;
@@ -48,145 +67,106 @@
     padding: 12px 16px;
     border-radius: 12px;
     text-decoration: none;
-    font-weight: 500;
-    color: #6b7280; /* Abu-abu teks */
-    transition: all 0.3s ease;
+    color: #6B7280;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s;
 }
 
 .menu-link:hover {
-    background-color: #ecfdf5; /* Hijau muda banget */
-    color: #047857;
+    background-color: #f3f4f6;
+    color: var(--primary-dark);
 }
 
-/* Menu Aktif (Sedang dibuka) */
+/* Menu Aktif */
 .menu-link.active {
-    background-color: #059669;
+    background-color: var(--primary-green);
     color: white;
-    box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
+    box-shadow: 0 10px 20px -5px rgba(152, 184, 155, 0.5);
 }
 
-.logout-section {
+/* Profil Bawah Sidebar */
+.sidebar-footer {
     border-top: 1px solid #f3f4f6;
-    margin-top: 30px;
     padding-top: 20px;
+}
+
+.user-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: #FAFAFA;
+    border-radius: 12px;
+    border: 1px solid #eee;
 }
 
 .btn-logout {
     width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: none;
-    border: none;
-    color: #ef4444; /* Merah */
-    font-weight: bold;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #fee2e2;
+    background: #fff1f2;
+    color: #ef4444;
+    border-radius: 10px;
     cursor: pointer;
-    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
-.btn-logout:hover {
-    background-color: #fef2f2;
-}
-
-/* === KONTEN UTAMA (KANAN) === */
+/* === KONTEN UTAMA === */
 .admin-content {
+    margin-left: 280px; /* Memberi ruang untuk sidebar */
     flex: 1;
-    margin-left: 260px; /* Supaya tidak ketutupan sidebar */
-    padding: 32px;
+    padding: 40px;
+    width: calc(100% - 280px); /* Mencegah overflow */
 }
 
-.top-header {
+/* === DASHBOARD WIDGETS (KHUSUS HALAMAN RINGKASAN) === */
+.dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
 }
 
-.profile-badge {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: white;
-    padding: 8px 16px 8px 8px;
-    border-radius: 50px;
-    border: 1px solid #e5e7eb;
-}
-
-.avatar-circle {
-    width: 40px;
-    height: 40px;
-    background-color: #059669;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-/* === DASHBOARD CARDS === */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 Kolom */
-    gap: 24px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
     margin-bottom: 30px;
 }
 
 .stat-card {
     background: white;
     padding: 24px;
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
-.stat-label {
-    color: #9ca3af;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 5px;
-    font-weight: 600;
+.icon-box {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; alignItems: center; justifyContent: center;
+    margin-bottom: 15px;
 }
-
-.stat-value {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #1f2937;
-    margin: 0;
-}
-
-.stat-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
 /* Warna Icon */
-.icon-green { background-color: #ecfdf5; color: #059669; }
-.icon-blue { background-color: #eff6ff; color: #2563eb; }
-.icon-purple { background-color: #f3e8ff; color: #9333ea; }
+.bg-green { background: #ecfdf5; color: #10b981; }
+.bg-blue { background: #eff6ff; color: #3b82f6; }
+.bg-purple { background: #f3e8ff; color: #a855f7; }
+.bg-yellow { background: #fefce8; color: #eab308; }
 
-/* === PRO TIPS === */
-.pro-tips-card {
-    background-color: #059669; /* Hijau Dashboard */
+.stat-value { font-size: 24px; font-weight: 800; color: #111827; }
+.stat-label { font-size: 13px; color: #6b7280; margin-bottom: 5px; }
+
+/* Status Card Hijau */
+.operational-card {
+    background-color: #98b89b;
     color: white;
     padding: 30px;
-    border-radius: 16px;
-    position: relative;
-    overflow: hidden;
-}
-
-.tips-content {
-    position: relative;
-    z-index: 10;
-    max-width: 600px;
+    border-radius: 20px;
 }

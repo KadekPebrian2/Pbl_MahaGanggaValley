@@ -100,4 +100,20 @@ class BookingController extends Controller
             'bookings' => $bookings
         ]);
     }
+
+    public function showTicket($id)
+    {
+        // 1. Cari Pesanan
+        $booking = Booking::where('user_id', Auth::id())
+                          ->where('id', $id)
+                          ->firstOrFail();
+
+        // 2. Cek Keamanan
+        if ($booking->status !== 'confirmed') {
+            return redirect()->route('my-orders')->with('error', 'Tiket belum tersedia.');
+        }
+        return Inertia::render('Ticket', [
+            'booking' => $booking
+        ]);
+    }
 }

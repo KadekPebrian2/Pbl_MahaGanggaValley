@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DashboardController; // Pastikan ini ada
 
 // 1. Rute Halaman Depan (Home)
 Route::get('/', function () {
@@ -47,7 +48,10 @@ Route::get('/my-orders', [BookingController::class, 'myOrders'])
     ->name('my-orders')
     ->middleware(['auth']);
 
-// (Bagian Dashboard User sudah dihapus disini) 🗑️
+// Rute untuk melihat E-Ticket (User)
+Route::get('/booking/{id}/ticket', [BookingController::class, 'showTicket'])
+    ->name('booking.ticket')
+    ->middleware('auth');
 
 // 4. Rute Profile
 Route::middleware('auth')->group(function () {
@@ -59,18 +63,22 @@ Route::middleware('auth')->group(function () {
 // === AREA KHUSUS ADMIN ===
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () { 
     
-    // URL: localhost/admin/dashboard
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    // [PERUBAHAN DISINI]
+    // Menggunakan DashboardController agar data pendapatan & statistik muncul
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-    // Nanti langkah selanjutnya kita tambah route Order, Gallery, Review di sini...
-    // 1. Halaman Daftar Pesanan
+    // Kelola Pesanan (Tetap pakai AdminController)
     Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
     
-    // 2. Aksi Terima Pembayaran (Approve)
+    // Aksi Terima Pembayaran (Approve)
     Route::post('/orders/{id}/approve', [AdminController::class, 'approveOrder'])->name('admin.orders.approve');
     
-    // 3. Aksi Tolak Pembayaran (Reject)
+    // Aksi Tolak Pembayaran (Reject)
     Route::post('/orders/{id}/reject', [AdminController::class, 'rejectOrder'])->name('admin.orders.reject');
+
+    // Rute untuk Validasi Tiket via Scan QR
+    // ==========================================================
+    Route::get('/check-ticket/{id}', [AdminController::class, 'checkTicket'])->name('admin.check.ticket');
 });
 
 require __DIR__ . '/auth.php';

@@ -12,28 +12,19 @@ export default function MyOrders({ bookings }) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
   };
 
-  // --- LOGIKA FILTER (DIPERBAIKI) ---
+  // --- LOGIKA FILTER ---
   const filteredOrders = allOrders.filter(order => {
     const status = order.status ? order.status.toLowerCase() : 'unknown';
 
     // 1. ATURAN MUTLAK: Buang yang 'unpaid' (Belum Bayar)
-    // Sesuai permintaan: anggap ini user iseng/cuma cek harga.
     if (status === 'unpaid') {
-        return false; // HILANGKAN DARI SEMUA TAB
+        return false; 
     }
 
     // 2. Logika Tab Navigasi
-    if (filter === "all") {
-        return true; // Tampilkan sisanya (Pending & Confirmed & Rejected)
-    }
-    
-    if (filter === 'waiting') {
-        return status === 'pending'; // Hanya yang sudah upload bukti
-    }
-    
-    if (filter === 'success') {
-        return status === 'confirmed'; // Hanya yang lunas
-    }
+    if (filter === "all") return true;
+    if (filter === 'waiting') return status === 'pending';
+    if (filter === 'success') return status === 'confirmed';
     
     return false;
   });
@@ -99,6 +90,32 @@ export default function MyOrders({ bookings }) {
                       <span className={`status-badge status-${statusRaw}`}>
                         {statusText}
                       </span>
+
+                      {/* --- TOMBOL LIHAT TIKET (HANYA MUNCUL JIKA CONFIRMED) --- */}
+                      {statusRaw === 'confirmed' && (
+                        <Link 
+                            href={`/booking/${order.id}/ticket`} 
+                            style={{ 
+                                display: 'block', 
+                                marginTop: '12px',
+                                textDecoration: 'none',
+                                backgroundColor: 'white', 
+                                border: '1px solid #5D755B', 
+                                color: '#5D755B', 
+                                padding: '8px 12px', 
+                                borderRadius: '8px', 
+                                fontSize: '13px', 
+                                fontWeight: 'bold',
+                                textAlign: 'center',
+                                transition: '0.2s',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                            }}
+                        >
+                            🎟️ Lihat E-Ticket
+                        </Link>
+                      )}
+                      {/* -------------------------------------------------------- */}
+
                     </div>
                   </div>
                 );

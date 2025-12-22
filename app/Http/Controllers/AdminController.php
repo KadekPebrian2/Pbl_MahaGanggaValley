@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Booking; // <--- WAJIB: Panggil Model Booking
+use App\Models\Booking; 
+use Carbon\Carbon; // <--- 1. WAJIB TAMBAH INI (Untuk Cek Tanggal)
 
 class AdminController extends Controller
 {
@@ -12,18 +13,12 @@ class AdminController extends Controller
     public function dashboard()
     {
         $stats = [
-            // PERBAIKAN: Hitung total pesanan HANYA yang statusnya BUKAN 'unpaid'
             'total_orders'   => Booking::where('status', '!=', 'unpaid')->count(),
-            
-            // Hitung yang pending (Sudah upload, butuh verifikasi)
             'pending_orders' => Booking::where('status', 'pending')->count(), 
-            
-            // Hitung uang masuk (Hanya yang sudah confirmed)
             'revenue'        => Booking::where('status', 'confirmed')->sum('total_price') 
         ];
 
-        // PERBAIKAN: Ambil 5 pesanan terbaru yang BUKAN 'unpaid'
-        $recent_orders = Booking::with('user') // Tambah with('user') biar nama penampil di dashboard aman
+        $recent_orders = Booking::with('user')
                                 ->where('status', '!=', 'unpaid') 
                                 ->latest()
                                 ->limit(5)
@@ -38,16 +33,19 @@ class AdminController extends Controller
     // --- 2. HALAMAN DAFTAR PESANAN ---
     public function orders()
     {
-        
-        // Ambil data booking DIMANA status TIDAK SAMA DENGAN 'unpaid'
-        // Artinya: Pesanan yang baru isi form (unpaid) TIDAK AKAN MUNCUL disini.
+        // Ambil semua pesanan kecuali yang belum bayar (unpaid)
         $bookings = Booking::with('user')
-                            ->where('status', '!=', 'unpaid') // <--- FILTER PENTING
+                            ->where('status', '!=', 'unpaid')
                             ->latest()
                             ->get();
 
+        // 2. PERBAIKAN DISINI: Hitung jumlah data untuk dikirim ke Frontend
+        // (Agar Badge "12 Total Transaksi" di Orders.jsx berfungsi)
+        $totalOrders = $bookings->count();
+
         return Inertia::render('Admin/Orders', [
-            'bookings' => $bookings
+            'bookings'    => $bookings,
+            'totalOrders' => $totalOrders // <--- Kirim variable ini
         ]);
     }
 
@@ -69,5 +67,63 @@ class AdminController extends Controller
         $booking->save();
 
         return redirect()->back()->with('message', 'Pesanan ditolak.');
+    }
+
+    // --- 5. [BARU] CEK TIKET PINTAR (VALIDASI TANGGAL) ---
+    // Fungsi ini akan dipanggil saat QR Code discan
+    public function checkTicket($id)
+    {
+        // A. Cari Data Pesanan
+        $booking = Booking::with('user')->find($id);
+
+        // B. Jika ID Tidak Ditemukan (QR Code Palsu/Typo)
+        if (!$booking) {
+            return response()->json([
+                'status' => 'error',
+                'message' => '❌ TIKET TIDAK DITEMUKAN! (ID Tidak Terdaftar)'
+            ]);
+        }
+
+        // C. Cek Status Pembayaran (Harus Lunas)
+        if ($booking->status !== 'confirmed') {
+            // Cek spesifik kenapa gagal
+            $msg = $booking->status === 'pending' ? '⚠️ TIKET BELUM DIVERIFIKASI ADMIN!' : '⛔ TIKET SUDAH DITOLAK!';
+            return response()->json([
+                'status' => 'error',
+                'message' => $msg
+            ]);
+        }
+
+        // D. LOGIKA TANGGAL (PINTAR)
+        // Bandingkan Hari Ini vs Tanggal Tiket
+        $ticketDate = Carbon::parse($booking->date)->startOfDay(); // Jam di-nol-kan (00:00:00)
+        $today      = Carbon::now()->startOfDay();
+
+        // Skenario 1: Datang Telat (Kadaluwarsa)
+        if ($today->gt($ticketDate)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => '⛔ TIKET KADALUWARSA! Tanggal kunjungan (' . $booking->date . ') sudah lewat.'
+            ]);
+        }
+
+        // Skenario 2: Datang Kepagian (Belum Harinya)
+        if ($today->lt($ticketDate)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => '⏳ BELUM WAKTUNYA! Tiket ini berlaku untuk tanggal ' . $booking->date
+            ]);
+        }
+
+        // E. Lolos Semua Cek (Tanggal Cocok & Status Lunas)
+        return response()->json([
+            'status' => 'success',
+            'message' => '✅ TIKET VALID! Silakan Masuk.',
+            'data' => [
+                'name' => $booking->user->name ?? $booking->name,
+                'qty'  => $booking->qty . ' Orang',
+                'date' => $booking->date
+            ]
+        ]);
     }
 }

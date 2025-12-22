@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Container Luar */
+.ticket-container {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Kartu Tiket */
+.ticket-card {
+    background-color: white;
+    width: 100%;
+    max-width: 850px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- HEADER --- */
+.ticket-header {
+    background-color: #9ab99d; /* Hijau Sage Pas */
+    height: 70px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: white;
+}
+
+.back-button {
+    font-size: 24px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.logo-placeholder {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* --- BADAN TIKET (FLEXBOX) --- */
+.ticket-body {
+    display: flex;
+    min-height: 320px;
+    position: relative;
+}
+
+/* 1. AREA UTAMA (KIRI GARIS PUTUS) */
+.main-section {
+    flex: 3.5; /* Mengambil 75% lebar */
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Badge Payment */
+.payment-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #111827;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.check-circle {
+    width: 24px;
+    height: 24px;
+    background-color: #9ab99d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+}
+
+.ticket-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 25px;
+}
+
+/* Layout Konten: Kiri (Data) - Kanan (QR) */
+.content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Tabel Data Kecil */
+.details-table {
+    width: 60%; /* Agar tidak terlalu lebar ke kanan */
+    border-collapse: collapse;
+}
+
+.details-table td {
+    padding: 6px 0;
+    vertical-align: top;
+}
+
+/* Kolom Label */
+.col-label {
+    width: 120px; /* Lebar label fix agar rapi */
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Kolom Isi */
+.col-value {
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* QR Code (Di dalam Main Section) */
+.qr-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px; /* Sedikit naik agar sejajar */
+}
+
+.qr-img {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #111;
+    padding: 2px;
+    border-radius: 4px;
+}
+
+.scan-text {
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 5px;
+}
+
+/* 2. AREA SOBEKAN (KANAN GARIS PUTUS) */
+.stub-section {
+    flex: 1; /* Mengambil 25% lebar */
+    border-left: 2px dashed #cbd5e1; /* GARIS PUTUS-PUTUS DISINI */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: #fff;
+}
+
+.vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    letter-spacing: 1px;
+}
+
+/* Print Mode */
+@media print {
+    body { background: white; }
+    .ticket-container { padding: 0; }
+    .ticket-card { box-shadow: none; border: 1px solid #ccc; }
+    .ticket-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none; }
+}

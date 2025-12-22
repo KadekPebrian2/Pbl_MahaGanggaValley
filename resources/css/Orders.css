@@ -1,57 +1,62 @@
 /* Import Font Premium: Inter */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* --- 1. RESET GLOBAL --- */
+/* --- 1. RESET GLOBAL & LAYOUT FIX --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* --- 2. LAYOUT UTAMA (SOLUSI BENTROK) --- */
+/* Solusi Bentrok Layout (Override Admin.css) */
 .admin-container {
-    /* Pakai !important biar menang lawan admin.css */
-    display: flex !important; 
+    display: flex !important;
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
-    background-color: #f8faf8; 
+    background-color: #f8faf8;
     color: #374151;
-    
-    /* Hapus jarak gaib di antara sidebar dan konten */
-    gap: 0 !important; 
+    gap: 0 !important; /* Hapus jarak aneh */
 }
 
-/* --- 3. SIDEBAR (KIRI) --- */
+/* --- 2. SIDEBAR (KIRI) --- */
 .admin-sidebar {
-    /* Paksa lebarnya tetap segini */
     width: 260px !important;
-    flex-shrink: 0; 
+    flex-shrink: 0;
     background-color: #ffffff;
     border-right: 1px solid #e5e7eb;
-    
-    /* Ganti posisi dari fixed (admin.css) jadi sticky */
-    position: sticky !important; 
+    position: sticky !important; /* Agar sidebar diam saat scroll */
     top: 0;
     height: 100vh;
     z-index: 50;
-    
     padding: 25px;
     display: flex;
     flex-direction: column;
 }
 
-.sidebar-title {
-    color: #5D755B; 
-    margin-bottom: 35px;
-    font-weight: 800;
-    font-size: 1.4rem;
+.brand-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    margin-bottom: 35px;
+    color: #5D755B;
 }
 
-/* --- NAVIGATION LINKS --- */
-.nav-link {
+.menu-label {
+    font-size: 11px;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.menu-link {
     text-decoration: none;
     color: #6b7280;
     padding: 12px 15px;
@@ -59,28 +64,40 @@
     font-weight: 500;
     font-size: 0.9rem;
     transition: all 0.2s ease;
-    margin-bottom: 5px;
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.nav-link:hover {
+.menu-link:hover {
     background-color: #f1f5f1;
-    color: #5D755B;
+    color: #A3C4AC;
 }
 
-.nav-link.active {
+.menu-link.active {
     background-color: #edf2ed;
-    color: #5D755B;
+    color: #A3C4AC;
     font-weight: 600;
 }
 
-.btn-logout {
+.sidebar-footer {
     margin-top: auto;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 20px;
+}
+
+.user-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.btn-logout {
+    width: 100%;
     text-align: left;
     border: none;
-    background: none;
+    background: #fff1f2;
     color: #ef4444;
     padding: 12px 15px;
     cursor: pointer;
@@ -90,56 +107,105 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    justify-content: center;
 }
 
 .btn-logout:hover {
-    background-color: #fef2f2;
+    background-color: #fee2e2;
 }
 
-/* --- 4. KONTEN UTAMA (KANAN) --- */
+/* --- 3. KONTEN UTAMA (KANAN) --- */
 .admin-content {
-    flex: 1; /* Mengisi sisa ruang */
-    
-    /* --- INI KUNCI PERBAIKANNYA --- */
-    /* Hapus margin 260px bawaan admin.css */
-    margin-left: 0 !important; 
-    
-    /* Padding dirapikan */
-    padding: 30px !important;  
-    
+    flex: 1;
+    margin-left: 0 !important; /* Hapus margin bawaan admin.css */
+    padding: 30px !important;
     overflow-y: auto;
     overflow-x: hidden;
-    width: 0;
+    width: 0; /* Trik agar table responsive */
+}
+
+/* --- 4. HEADER & CONTROLS (PENCARIAN) --- */
+.dashboard-header {
+    margin-bottom: 25px;
 }
 
 .header-title {
+    font-size: 28px;
+    color: #111827;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.header-subtitle {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Kartu Putih Pembungkus Tabel */
+.orders-card {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    padding: 30px;
+    border: 1px solid #e5e7eb;
+}
+
+/* Baris Judul Tabel & Input Search */
+.controls-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-.header-title h1 {
-    font-size: 24px;
-    color: #111827;
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.table-title {
+    font-size: 18px;
     font-weight: 700;
+    color: #1f2937;
+}
+
+.data-badge {
+    background: #f3f4f6;
+    color: #6b7280;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.search-input {
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    font-size: 13px;
+    width: 250px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #A3C4AC;
 }
 
 /* --- 5. TABEL STYLING --- */
-.table-container {
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-    border: 1px solid #e5e7eb;
-    overflow-x: auto; 
-    width: 100%;
+.table-wrapper {
+    overflow-x: auto;
 }
 
 .orders-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 .orders-table th {
@@ -151,7 +217,7 @@
     letter-spacing: 0.03em;
     padding: 16px 20px;
     border-bottom: 2px solid #e5e7eb;
-    text-align: left; 
+    text-align: left;
 }
 
 .orders-table td {
@@ -161,34 +227,25 @@
     vertical-align: middle;
 }
 
-/* Perataan Tengah (ID, Status, Aksi, dll) */
-.orders-table th:nth-child(1), .orders-table td:nth-child(1), 
-.orders-table th:nth-child(4), .orders-table td:nth-child(4), 
-.orders-table th:nth-child(6), .orders-table td:nth-child(6), 
-.orders-table th:nth-child(7), .orders-table td:nth-child(7), 
-.orders-table th:nth-child(8), .orders-table td:nth-child(8)  
-{
-    text-align: center;
-}
-
 /* Efek Hover Baris */
 .orders-table tbody tr:hover {
     background-color: #fcfdfc;
 }
 
-/* --- 6. KOMPONEN KECIL --- */
+/* --- 6. USER INFO & AVATAR --- */
 .user-cell {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.user-avatar {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, #8FA38C 0%, #708a6d 100%);
-    color: white;
-    border-radius: 50%;
+.avatar-circle {
+    width: 38px;
+    height: 38px;
+    /* Gradient Hijau sesuai tema */
+    background: linear-gradient(135deg, #A3C4AC 0%, #8FA38C 100%);
+    color: white; /* Teks putih agar kontras */
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -197,45 +254,36 @@
     flex-shrink: 0;
 }
 
-.user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; 
-}
+.user-name { font-weight: 600; font-size: 14px; color: #111827; }
+.user-email { font-size: 12px; color: #9ca3af; }
 
-.user-name { font-weight: 600; color: #111827; }
-.user-email { font-size: 0.75rem; color: #9ca3af; }
-
+/* --- 7. STATUS BADGES & TOMBOL --- */
 .status-badge {
-    padding: 5px 12px;
-    border-radius: 99px;
-    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 11px;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    justify-content: center;
 }
 
-.status-unpaid { background-color: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
-.status-pending { background-color: #fffbeb; color: #b45309; border: 1px solid #fcd34d; }
-.status-confirmed { background-color: #edf2ed; color: #5D755B; border: 1px solid #dcebdc; }
-.status-rejected { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.status-lunas { background-color: #edf2ed; color: #5D755B; border: 1px solid #dcebdc; }
+.status-verifikasi { background-color: #fffbeb; color: #b45309; border: 1px solid #fcd34d; }
+.status-ditolak { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
 
-.link-photo {
-    color: #5D755B;
-    font-weight: 500;
-    text-decoration: none;
-    border-bottom: 1px dashed #8FA38C;
+.link-blue {
+    color: #3b82f6;
+    text-decoration: underline;
+    font-size: 12px;
 }
 
 .action-buttons {
     display: flex;
     gap: 8px;
-    justify-content: center;
 }
 
-.btn-approve, .btn-reject {
+.btn-action {
     border: none;
     width: 32px;
     height: 32px;
@@ -244,11 +292,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 14px;
     transition: 0.2s;
 }
 
-.btn-approve { background-color: white; color: #5D755B; border: 1px solid #8FA38C; }
-.btn-approve:hover { background-color: #8FA38C; color: white; }
-.btn-reject { background-color: white; color: #ef4444; border: 1px solid #fee2e2; }
+.btn-approve { background-color: white; color: #10b981; border: 1px solid #10b981; }
+.btn-approve:hover { background-color: #10b981; color: white; }
+
+.btn-reject { background-color: white; color: #ef4444; border: 1px solid #ef4444; }
 .btn-reject:hover { background-color: #ef4444; color: white; }
+
+/* --- 8. EMPTY STATE --- */
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    color: #9ca3af;
+}
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+
+/* Utility Text */
+.text-price { font-weight: 700; color: #5D755B; }
+.text-selesai { font-size: 12px; color: #9ca3af; }
