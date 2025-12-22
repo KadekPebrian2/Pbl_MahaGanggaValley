@@ -33,8 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Gunakan garis miring '/' untuk kembali ke halaman awal
-        return redirect()->intended('/');
+        return redirect()->intended('/admin/dashboard');
     }
 
     /**
@@ -42,12 +41,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // KITA SUDAH HAPUS JEBAKANNYA DISINI
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // Redirect ke halaman Login (sesuai keinginan Anda)
+        return redirect('/login');
     }
 }

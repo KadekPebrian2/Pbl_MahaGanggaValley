@@ -1,192 +1,284 @@
-/* === LAYOUT UTAMA === */
-.admin-container {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f3f4f6; /* Abu-abu muda */
-    font-family: sans-serif;
+/* resources/css/Admin.css */
+
+/* --- 1. IMPORT FONT & ICON --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+/* --- 2. VARIABEL WARNA --- */
+:root {
+    --primary-green: #9DC0A6;       /* Hijau Sage (Warna Utama Tombol Aktif) */
+    --primary-dark: #1a3c27;        /* Hijau Tua (Untuk Teks saat Aktif) */
+    --bg-light: #F5F7FA;            /* Background Halaman */
+    --text-dark: #1F2937;
+    --text-gray: #6B7280;
+    --sidebar-width: 260px;
+    --card-radius: 20px;
 }
 
-/* === SIDEBAR (KIRI) === */
-.admin-sidebar {
-    width: 260px;
-    background-color: #ffffff;
-    border-right: 1px solid #e5e7eb;
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+body { background-color: var(--bg-light); color: var(--text-dark); }
+
+.container { display: flex; width: 100%; min-height: 100vh; }
+
+/* --- 3. SIDEBAR --- */
+.sidebar {
+    width: var(--sidebar-width);
+    background: #ffffff;
+    padding: 30px 24px;
+    height: 100vh;
     position: fixed;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 100;
+    border-right: 1px solid #EFF0F6;
+    display: flex; flex-direction: column;
+    z-index: 50;
 }
 
-.sidebar-header {
-    padding: 24px;
+/* Header Logo */
+.sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+.logo-icon { color: var(--primary-green); font-size: 28px; }
+.logo-text h2 { font-size: 16px; font-weight: 700; color: var(--primary-green); line-height: 1.2; }
+.logo-text span { font-size: 10px; letter-spacing: 2px; color: #9CA3AF; font-weight: 600; display: block; }
+
+/* --- MENU LIST & ANIMASI --- */
+.menu-label { font-size: 11px; font-weight: 600; color: #9CA3AF; margin-bottom: 12px; text-transform: uppercase; }
+.sidebar-menu ul { list-style: none; }
+
+.sidebar-menu li { 
+    margin-bottom: 8px; 
+    border-radius: 12px; 
+    
+    /* Agar saat diklik border muncul tidak bikin layout lompat, kita kasih border transparan dulu */
+    border: 1px solid transparent; 
+
+    /* ANIMASI: Transisi Halus */
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform-origin: center;
+    cursor: pointer;
+    position: relative;
 }
 
-.brand-logo {
-    font-size: 1.5rem; /* 24px */
-    font-weight: bold;
-    color: #059669; /* Emerald Green */
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
+.sidebar-menu a {
+    text-decoration: none; display: flex; align-items: center;
+    padding: 14px 18px; color: var(--text-gray); font-size: 14px; font-weight: 500;
+}
+.sidebar-menu a i { width: 24px; margin-right: 12px; transition: transform 0.2s; }
+
+
+/* --- INTERAKSI TOMBOL SIDEBAR --- */
+
+/* 1. Saat Hover (Geser Sedikit) */
+.sidebar-menu li:hover:not(.active) { 
+    background-color: #F3F4F6;
+    transform: translateX(4px); /* Efek geser kanan */
+}
+.sidebar-menu li:hover i {
+    transform: scale(1.1); /* Ikon membesar sedikit */
 }
 
-.sidebar-menu {
-    padding: 0 16px;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+/* 2. Saat Diklik (Mengecil & BERUBAH WARNA) */
+.sidebar-menu li:active {
+    transform: scale(0.95); /* Mengecil ke 95% */
+    
+    /* WARNA BERUBAH JADI HIJAU MUDA SAAT DITEKAN */
+    background-color: #dcfce7 !important; 
+    border-color: var(--primary-green); /* Border jadi hijau */
 }
 
-/* Tombol Menu */
-.menu-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 500;
-    color: #6b7280; /* Abu-abu teks */
-    transition: all 0.3s ease;
+/* 3. State Aktif (Halaman Terpilih) - Tetap Hijau */
+.sidebar-menu li.active {
+    background-color: var(--primary-green) !important;
+    box-shadow: 0 4px 15px rgba(157, 192, 166, 0.4);
+    transform: scale(1);
+    border-color: transparent; /* Hilangkan border border saat aktif statis */
 }
 
-.menu-link:hover {
-    background-color: #ecfdf5; /* Hijau muda banget */
-    color: #047857;
+/* Warna Teks & Icon saat Aktif */
+.sidebar-menu li.active a { 
+    color: var(--primary-dark) !important; 
+    font-weight: 700; 
+}
+.sidebar-menu li.active a i { 
+    color: var(--primary-dark) !important; 
 }
 
-/* Menu Aktif (Sedang dibuka) */
-.menu-link.active {
-    background-color: #059669;
-    color: white;
-    box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
-}
 
-.logout-section {
-    border-top: 1px solid #f3f4f6;
-    margin-top: 30px;
-    padding-top: 20px;
+/* --- FOOTER SIDEBAR --- */
+.sidebar-footer { margin-top: auto; }
+.user-profile {
+    display: flex; align-items: center; gap: 12px; padding: 12px;
+    background: #F9FAFB; border-radius: 12px; margin-bottom: 16px; border: 1px solid #F3F4F6;
 }
+.avatar {
+    width: 40px; height: 40px; border-radius: 50%; background: white; border: 1px solid #E5E7EB;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary-green);
+}
+.user-info strong { display: block; font-size: 13px; color: #374151; }
+.user-info span { font-size: 10px; color: #9CA3AF; }
 
 .btn-logout {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: none;
-    border: none;
-    color: #ef4444; /* Merah */
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 12px;
+    width: 100%; padding: 12px; background: white; border: 1px solid #E5E7EB; border-radius: 12px;
+    color: #EF4444; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; justify-content: center; gap: 8px; transition: 0.2s;
 }
 
-.btn-logout:hover {
-    background-color: #fef2f2;
+/* Efek Tekan untuk Tombol Logout (Warna Merah Muda) */
+.btn-logout:hover { background-color: #FEF2F2; }
+.btn-logout:active { 
+    transform: scale(0.95); 
+    background-color: #fef2f2; 
+    border-color: #ef4444; /* Border merah menyala */
+    color: #b91c1c; 
 }
 
-/* === KONTEN UTAMA (KANAN) === */
-.admin-content {
-    flex: 1;
-    margin-left: 260px; /* Supaya tidak ketutupan sidebar */
-    padding: 32px;
+/* --- 4. MAIN CONTENT --- */
+.main-content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    padding: 40px;
 }
 
-.top-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
+.top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+.top-header h1 { font-size: 28px; font-weight: 700; }
+.subtitle { color: var(--text-gray); font-size: 14px; }
+.date-badge { background: white; padding: 10px 20px; border-radius: 50px; font-size: 13px; font-weight: 600; color: #6B7280; border: 1px solid #F3F4F6; }
+.dot { height: 8px; width: 8px; background-color: #10B981; border-radius: 50%; display: inline-block; margin-right: 8px; }
 
-.profile-badge {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: white;
-    padding: 8px 16px 8px 8px;
-    border-radius: 50px;
-    border: 1px solid #e5e7eb;
-}
+/* --- 5. CARDS & ANIMASI --- */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 30px; }
 
-.avatar-circle {
-    width: 40px;
-    height: 40px;
-    background-color: #059669;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-/* === DASHBOARD CARDS === */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 Kolom */
-    gap: 24px;
-    margin-bottom: 30px;
-}
-
-.stat-card {
-    background: white;
-    padding: 24px;
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-.stat-label {
-    color: #9ca3af;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
-
-.stat-value {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #1f2937;
-    margin: 0;
-}
-
-.stat-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
-/* Warna Icon */
-.icon-green { background-color: #ecfdf5; color: #059669; }
-.icon-blue { background-color: #eff6ff; color: #2563eb; }
-.icon-purple { background-color: #f3e8ff; color: #9333ea; }
-
-/* === PRO TIPS === */
-.pro-tips-card {
-    background-color: #059669; /* Hijau Dashboard */
-    color: white;
-    padding: 30px;
-    border-radius: 16px;
-    position: relative;
+.card {
+    background: white; 
+    padding: 24px; 
+    border-radius: var(--card-radius);
+    border: 1px solid #F3F4F6; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    position: relative; 
     overflow: hidden;
+    
+    /* ANIMASI */
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.tips-content {
-    position: relative;
-    z-index: 10;
-    max-width: 600px;
+/* 1. Efek Hover */
+.card:hover {
+    transform: translateY(-4px); 
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.07);
+    border-color: #E5E7EB;
 }
+
+/* 2. Efek Klik (Mengecil & BERUBAH WARNA) */
+.card:active {
+    transform: translateY(0) scale(0.97); 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    /* WARNA JADI MINT MUDA SAAT DITEKAN */
+    background-color: #f0fdf4; 
+    border-color: var(--primary-green);
+}
+.sidebar-menu-item.active {
+  background-color: #8FB396; /* Warna hijau sage dari gambar referensi */
+  color: #FFFFFF; /* Warna teks putih agar kontras */
+}
+/* Watermark Icon */
+.card::after {
+    font-family: "Font Awesome 6 Free"; font-weight: 900; font-size: 90px;
+    color: var(--primary-green); opacity: 0.15; position: absolute; bottom: -15px; right: -10px; transform: rotate(-15deg);
+    transition: all 0.3s ease;
+}
+.stats-grid .card:nth-child(1)::after { content: '\f53a'; } /* Wallet */
+.stats-grid .card:nth-child(2)::after { content: '\f3ff'; } /* Ticket */
+.stats-grid .card:nth-child(3)::after { content: '\f0c0'; } /* Users */
+.stats-grid .card:nth-child(4)::after { content: '\f005'; } /* Star */
+
+.card:hover::after {
+    transform: rotate(-15deg) scale(1.1);
+    opacity: 0.2;
+}
+
+.stat-header { display: flex; justify-content: space-between; position: relative; z-index: 2; }
+.icon-box { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+.green-icon { background: #E6F4EA; color: #16A34A; }
+.blue-icon { background: #E0F2FE; color: #0284C7; }
+.purple-icon { background: #F3E8FF; color: #9333EA; }
+.yellow-icon { background: #FEF9C3; color: #CA8A04; }
+
+.stat-value { font-size: 28px; font-weight: 700; position: relative; z-index: 2; }
+.badge-text { font-size: 10px; font-weight: 700; color: #D1D5DB; }
+.stat-trend { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 8px; background: #DCFCE7; color: #166534; display: inline-block; margin-top: 8px; position: relative; z-index: 2; }
+
+/* --- 6. BOTTOM SECTION --- */
+.dashboard-bottom { display: grid; grid-template-columns: 2.5fr 1fr; gap: 24px; }
+.recent-orders { background: white; padding: 30px; border-radius: var(--card-radius); border: 1px solid #F3F4F6; }
+.card-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+
+/* Link Lihat Semua (Animasi) */
+.link-view-all { 
+    font-size: 13px; color: var(--primary-green); font-weight: 600; text-decoration: none; 
+    transition: 0.2s; display: inline-block;
+}
+.link-view-all:active {
+    color: #1a3c27; /* Hijau tua */
+    transform: scale(0.9);
+}
+
+/* --- ITEM PESANAN TERBARU (ANIMASI) --- */
+.order-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 12px; margin: 0 -12px;
+    border-radius: 12px; border-bottom: 1px solid #F3F4F6;
+    
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+}
+.order-item:last-child { border-bottom: none; }
+
+.order-left { display: flex; align-items: center; gap: 16px; }
+.avatar-circle { width: 44px; height: 44px; background: #FFF7ED; color: #C2410C; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.avatar-circle.green { background: #ECFDF5; color: #047857; }
+.customer-name { font-weight: 600; display: block; font-size: 14px; }
+.ticket-info { margin-top: 2px; }
+.ticket-badge { background: #F3F4F6; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 6px; }
+.time-ago { font-size: 11px; color: #9CA3AF; }
+
+.order-right { text-align: right; }
+.price { display: block; font-weight: 700; margin-bottom: 4px; font-size: 14px; }
+.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.status-pending { background: #FFF7ED; color: #C2410C; }
+.status-success { background: #ECFDF5; color: #047857; }
+
+/* 1. Hover Order Item */
+.order-item:hover {
+    background-color: #F8FAFC;
+    transform: translateX(4px);
+    border-bottom-color: transparent;
+}
+
+/* 2. Klik Order Item (Mengecil & BERUBAH WARNA) */
+.order-item:active {
+    transform: scale(0.98) translateX(4px);
+    
+    /* WARNA HIJAU SAAT KLIK */
+    background-color: #f0fdf4; 
+    border-bottom: 1px solid var(--primary-green);
+}
+
+/* --- STATUS OPERASIONAL --- */
+.operational-status {
+    background-color: var(--primary-green); color: #1a3c27; padding: 30px;
+    border-radius: var(--card-radius); position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: center;
+}
+.operational-status::before {
+    content: ''; position: absolute; width: 150px; height: 150px; background: rgba(255,255,255,0.1);
+    border-radius: 50%; top: -30px; right: -30px;
+}
+.operational-status h3 { font-size: 14px; font-weight: 600; opacity: 0.8; margin-bottom: 8px; position: relative; z-index: 2; }
+.operational-status h2 { font-size: 28px; font-weight: 800; margin: 10px 0; position: relative; z-index: 2; }
+.operational-status p { font-size: 13px; line-height: 1.5; margin-bottom: 24px; opacity: 0.9; position: relative; z-index: 2; }
+.open-hours { 
+    background: rgba(26,60,39,0.1); padding: 10px 16px; border-radius: 12px; 
+    font-size: 12px; font-weight: 700; width: fit-content; position: relative; z-index: 2; 
+    display: flex; align-items: center; gap: 8px;
+}
+.dot-black { width: 6px; height: 6px; background: #1a3c27; border-radius: 50%; display: block; }

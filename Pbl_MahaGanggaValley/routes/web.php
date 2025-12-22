@@ -6,8 +6,15 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController; 
 
-// 1. Rute Halaman Depan (Home)
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// --- 1. HALAMAN DEPAN (PUBLIC) ---
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -15,77 +22,76 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// --- ALUR TRANSAKSI (Booking -> Bayar -> Konfirmasi) ---
-
-// A. Form Booking
-Route::get('/booking', function () {
-    return Inertia::render('Booking');
-})->name('booking')->middleware(['auth']);
-
-// B. Simpan Data Booking
-Route::post('/booking-store', [BookingController::class, 'store'])
-    ->name('booking.store')
-    ->middleware(['auth']);
-
-// C. Halaman Pembayaran
-Route::get('/payment', [BookingController::class, 'showPayment'])
-    ->name('payment')
-    ->middleware(['auth']);
-
-// D. KONFIRMASI PEMBAYARAN (UPLOAD GAMBAR)
-Route::post('/payment-confirm', [BookingController::class, 'confirmPayment'])
-    ->name('payment.confirm')
-    ->middleware(['auth']);
-
-// -------------------------------------------------------
-
 Route::get('/success', function () {
     return Inertia::render('Success');
 })->name('success');
 
-Route::get('/my-orders', [BookingController::class, 'myOrders'])
-    ->name('my-orders')
-    ->middleware(['auth']);
 
-// 3. Rute Dashboard User Biasa (Jika ada)
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// --- 2. USER DASHBOARD & PROFILE ---
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Dashboard User Biasa
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 
-// 4. Rute Profile
-Route::middleware('auth')->group(function () {
+    // Profile User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // History Pesanan User
+    Route::get('/my-orders', [BookingController::class, 'myOrders'])->name('my-orders');
 });
 
 
-// === AREA KHUSUS ADMIN (YANG SUDAH DIPERBAIKI) ===
-// middleware(['auth']): Wajib Login
-// prefix('admin'): Semua URL otomatis ada '/admin' di depannya
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+// --- 3. ALUR BOOKING (PEMESANAN TIKET) ---
+Route::middleware(['auth'])->group(function () {
+    Route::get('/booking', function () {
+        return Inertia::render('Booking');
+    })->name('booking');
+
+    Route::post('/booking-store', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/payment', [BookingController::class, 'showPayment'])->name('payment');
+    Route::post('/payment-confirm', [BookingController::class, 'confirmPayment'])->name('payment.confirm');
+});
+
+
+// --- 4. KHUSUS ADMIN (SIDEBAR HIJAU) ---
+// Semua URL di sini akan berawalan /admin/....
+// Contoh: /admin/dashboard, /admin/orders
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     
-    // 1. Dashboard Admin
+    // A. Dashboard Admin
+    // URL: /admin/dashboard
     Route::get('/dashboard', function () {
         return Inertia::render('Admin/Dashboard'); 
-    })->name('admin.dashboard');
+    })->name('dashboard');
 
-    // 2. Pesanan Tiket (Orders)
+    // B. Pesanan Tiket
+    // URL: /admin/orders
     Route::get('/orders', function () {
+        // Pastikan Anda punya file: resources/js/Pages/Admin/Orders.jsx
         return Inertia::render('Admin/Orders');
-    })->name('admin.orders');
+    })->name('orders');
 
-    // 3. Galeri Wisata (Gallery)
+    // C. Galeri Wisata
+    // URL: /admin/gallery
     Route::get('/gallery', function () {
         return Inertia::render('Admin/Gallery');
-    })->name('admin.gallery');
+    })->name('gallery');
 
-    // 4. Ulasan Pengunjung (Reviews)
+    // D. Ulasan Pengunjung
+    // URL: /admin/reviews
     Route::get('/reviews', function () {
         return Inertia::render('Admin/Reviews');
-    })->name('admin.reviews');
+    })->name('reviews');
 
 });
 
-// Load Rute Autentikasi (Login, Register, Logout)
+// --- 5. LOGOUT ---
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+// Load Rute Auth (Login/Register)
 require __DIR__ . '/auth.php';
