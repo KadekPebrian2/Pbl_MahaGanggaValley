@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\DashboardController; // Pastikan ini ada
+use App\Http\Controllers\DashboardController; 
+use App\Http\Controllers\GalleryController;
+use App\Models\Gallery;
 
 // 1. Rute Halaman Depan (Home)
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
+        'galleries' => Gallery::orderBy('idFoto', 'desc')->get(),
     ]);
 })->name('home');
 
@@ -79,6 +82,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Rute untuk Validasi Tiket via Scan QR
     // ==========================================================
     Route::get('/check-ticket/{id}', [AdminController::class, 'checkTicket'])->name('admin.check.ticket');
+
+    //MANAJEMEN GALLERY
+    Route::get('/gallery', [GalleryController::class, 'index'])->name('admin.gallery.index');
+    Route::post('/gallery', [GalleryController::class, 'store'])->name('admin.gallery.store');
+    
+    // Gunakan POST untuk update agar file upload (gambar) tidak error di Inertia
+    Route::post('/gallery/{id}', [GalleryController::class, 'update'])->name('admin.gallery.update');
+    
+    // Hapus Foto
+    Route::delete('/gallery/{id}', [GalleryController::class, 'destroy'])->name('admin.gallery.destroy');
 });
 
 require __DIR__ . '/auth.php';

@@ -10,7 +10,7 @@ import Gallery from '@/Components/sections/Gallery';
 import MapSection from '@/Components/sections/MapSection';
 import Comments from '@/Components/sections/Comments';
 
-export default function Welcome(props) {
+export default function Welcome({galleries}) {
     return (
         <AppLayout>
             {/* Judul di Tab Browser */}
@@ -19,7 +19,7 @@ export default function Welcome(props) {
             {/* Tampilan Website Kamu */}
             <div className="bg-white">
                 <HomeSection />
-                <Gallery />
+                <Gallery items={galleries} />
                 <MapSection />
                 <Comments />
             </div>

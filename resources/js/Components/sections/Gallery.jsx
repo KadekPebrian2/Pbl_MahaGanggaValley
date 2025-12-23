@@ -1,23 +1,25 @@
-// resources/js/Components/sections/Gallery.jsx
-
 import React, { useEffect, useRef, useState } from "react";
 
-// Data gambar sekarang menggunakan variabel import tadi, bukan string path.
 const galleryImages = [
-  { src: "/images/g1.jpg", title: "Spot #1", sub: "Bentuk bangunan yang unik." },
-  { src: "/images/g2.jpg", title: "Spot #2", sub: "Pemandangan sawah terasering." },
-  { src: "/images/g3.jpg", title: "Spot #3", sub: "Jembatan ikonik di atas lembah." },
-  { src: "/images/g4.jpg", title: "Spot #4", sub: "Suasana pagi yang menyegarkan." },
-  { src: "/images/g5.jpg", title: "Spot #5", sub: "Interior penginapan yang nyaman." },
+  // Gunakan salah satu nama file yang ada di screenshot folder Anda
+  { src: "/images/gallery/1766384199_IMG_5559.JPG", title: "Spot #1", sub: "Bentuk bangunan yang unik." },
+  { src: "/images/gallery/DSC04097.JPG", title: "Spot #2", sub: "Pemandangan sawah terasering." },
 ];
 
-export default function Gallery({ images = galleryImages }) {
+export default function Gallery({ items = [] }) {
   
-  // --- LOGIKA DI BAWAH INI TIDAK ADA YANG DIUBAH (SUDAH AMAN) ---
-  
+  const displayImages = items.length > 0 
+    ? items.map(img => ({
+        src: `/images/gallery/${img.namaFile}`, // Pastikan path mengarah ke /storage/
+        title: img.judul,
+        sub: img.deskripsi
+      }))
+    : galleryImages;
+
+  // --- LOGIKA SLIDER (TIDAK BERUBAH) ---
   const [index, setIndex] = useState(0);
   const timerRef = useRef(null);
-  const length = images.length;
+  const length = displayImages.length;
 
   const startAutoSlider = () => {
     stopAutoSlider(); 
@@ -27,9 +29,7 @@ export default function Gallery({ images = galleryImages }) {
   };
 
   const stopAutoSlider = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
+    if (timerRef.current) clearInterval(timerRef.current);
   };
 
   useEffect(() => {
@@ -45,33 +45,26 @@ export default function Gallery({ images = galleryImages }) {
       <div className="container">
         <div className="section-head reveal">
           <h3>Galeri & Cerita</h3>
-          <p>
-            Nikmati keindahan alam yang memukau dan sudut-sudut estetik yang kami tawarkan.
-          </p>
+          <p>Nikmati keindahan alam yang memukau dan sudut-sudut estetik.</p>
         </div>
 
         <div className="slider-wrap reveal" style={{ '--delay': '0.2s' }}>
-          
-          <button
-            className="slide-btn left"
-            onClick={goToPrev}
-            aria-label="Previous image"
-          >
-            ‹
-          </button>
+          <button className="slide-btn left" onClick={goToPrev}>‹</button>
 
-          <div
-            className="slider-viewport"
-            onMouseEnter={stopAutoSlider}
-            onMouseLeave={startAutoSlider}
-          >
-            <div
-              className="slider-track"
-              style={{ transform: `translateX(-${index * 100}%)` }}
-            >
-              {images.map((img, i) => (
+          <div className="slider-viewport" onMouseEnter={stopAutoSlider} onMouseLeave={startAutoSlider}>
+            <div className="slider-track" style={{ transform: `translateX(-${index * 100}%)` }}>
+              {displayImages.map((img, i) => (
                 <figure key={i} className="slide-item">
-                  <img src={img.src} alt={img.title} />
+                  {/* PERBAIKAN: Tambahkan onError agar jika link error, gambar tidak hilang */}
+                  <img 
+                    src={img.src} 
+                    alt={img.title} 
+                    onError={(e) => {
+                    e.target.onerror = null; 
+                    // Pastikan path ini sama dengan yang ada di folder public/images/gallery/
+                    e.target.src = "/images/gallery/g4.jpg_1766043720.png"; 
+                }}
+                  />
                   <figcaption>
                     <div className="cap-title">{img.title}</div>
                     <div className="cap-sub">{img.sub}</div>
@@ -81,13 +74,7 @@ export default function Gallery({ images = galleryImages }) {
             </div>
           </div>
 
-          <button
-            className="slide-btn right"
-            onClick={goToNext}
-            aria-label="Next image"
-          >
-            ›
-          </button>
+          <button className="slide-btn right" onClick={goToNext}>›</button>
         </div>
       </div>
     </section>
