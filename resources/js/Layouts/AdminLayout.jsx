@@ -5,17 +5,19 @@ import '../../css/Admin.css';
 export default function AdminLayout({ children }) {
     const { url } = usePage();
 
+    // DAFTAR MENU SIDEBAR
     const menus = [
         { name: 'Ringkasan', url: '/admin/dashboard', icon: '📊' },
+        { name: 'Scan Tiket', url: '/admin/scan', icon: '📷' }, 
         { name: 'Pesanan Tiket', url: '/admin/orders', icon: '🎟️' },
         { name: 'Galeri Wisata', url: '/admin/gallery', icon: '🖼️' },
-        { name: 'Ulasan Pengunjung', url: '/admin/reviews', icon: '💬' },
+        { name: 'Ulasan Pengunjung', url: '/admin/ulasan', icon: '💬' }, 
     ];
 
     return (
         <div className="admin-container">
             
-            {/* === SIDEBAR BARU === */}
+            {/* === SIDEBAR KIRI === */}
             <aside className="admin-sidebar">
                 {/* BAGIAN ATAS: LOGO & MENU */}
                 <div>
@@ -66,7 +68,7 @@ export default function AdminLayout({ children }) {
                 </div>
             </aside>
 
-            {/* === KONTEN KANAN (Tempat Pesanan Tiket dll muncul) === */}
+            {/* === KONTEN KANAN (Tempat Halaman Berubah-ubah) === */}
             <main className="admin-content">
                 {children}
             </main>

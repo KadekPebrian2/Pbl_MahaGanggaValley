@@ -1,27 +1,27 @@
 import React from 'react';
 import { Head } from '@inertiajs/react';
-// Import Layout Utama (yang ada Navbarnya)
 import AppLayout from '@/Layouts/AppLayout'; 
 
-// Import Bagian-bagian (Sections) Website Kamu
-// Pastikan tulisan besar/kecilnya SESUAI dengan nama file di laptopmu
+// Import Bagian-bagian (Sections)
 import HomeSection from '@/Components/sections/Home'; 
 import Gallery from '@/Components/sections/Gallery';
 import MapSection from '@/Components/sections/MapSection';
-import Comments from '@/Components/sections/Comments';
+import Ulasan from '@/Components/sections/Ulasan'; 
 
-export default function Welcome({galleries}) {
+export default function Welcome({ galleries, reviews }) { 
     return (
         <AppLayout>
-            {/* Judul di Tab Browser */}
             <Head title="Home - Maha Gangga Valley" />
             
-            {/* Tampilan Website Kamu */}
             <div className="bg-white">
                 <HomeSection />
+                
                 <Gallery items={galleries} />
+                
                 <MapSection />
-                <Comments />
+                
+                {/* [PERBAIKAN] Panggil komponen Ulasan */}
+                <Ulasan reviews={reviews} />
             </div>
             
         </AppLayout>

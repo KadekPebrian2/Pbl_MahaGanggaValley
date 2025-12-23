@@ -35,7 +35,6 @@ export default function Dashboard({ stats, recentOrders }) {
                         <span style={{fontSize:'10px', background:'#f3f4f6', height:'fit-content', padding:'4px 8px', borderRadius:'6px'}}>TOTAL</span>
                     </div>
                     <div className="stat-label">Total Pendapatan</div>
-                    {/* GUNAKAN DATA ASLI DI SINI */}
                     <div className="stat-value">Rp {formatRupiah(stats.income)}</div>
                     <div style={{fontSize:'12px', marginTop:'5px', color:'#10b981'}}>↗ Data Real-time</div>
                 </div>
@@ -47,7 +46,6 @@ export default function Dashboard({ stats, recentOrders }) {
                         <span style={{fontSize:'10px', background:'#f3f4f6', height:'fit-content', padding:'4px 8px', borderRadius:'6px'}}>TERJUAL</span>
                     </div>
                     <div className="stat-label">Tiket Terjual</div>
-                    {/* GUNAKAN DATA ASLI DI SINI */}
                     <div className="stat-value">{stats.tickets_sold} Lembar</div>
                     <div style={{fontSize:'12px', marginTop:'5px', color:'#9ca3af'}}>Total Akumulasi</div>
                 </div>
@@ -59,20 +57,27 @@ export default function Dashboard({ stats, recentOrders }) {
                         <span style={{fontSize:'10px', background:'#f3f4f6', height:'fit-content', padding:'4px 8px', borderRadius:'6px'}}>VISITOR</span>
                     </div>
                     <div className="stat-label">Total Pengunjung</div>
-                    {/* GUNAKAN DATA ASLI DI SINI */}
                     <div className="stat-value">{stats.visitors} Orang</div>
                     <div style={{fontSize:'12px', marginTop:'5px', color:'#a855f7'}}>Berdasarkan Tiket</div>
                 </div>
 
-                {/* Card 4: Rating (Masih Dummy jika belum ada tabel review) */}
+                {/* --- [PERBAIKAN DISINI] Card 4: Rating & Ulasan --- */}
                 <div className="stat-card">
                     <div style={{display:'flex', justifyContent:'space-between'}}>
                         <div className="icon-box bg-yellow">⭐</div>
                         <span style={{fontSize:'10px', background:'#f3f4f6', height:'fit-content', padding:'4px 8px', borderRadius:'6px'}}>RATA-RATA</span>
                     </div>
                     <div className="stat-label">Rating & Ulasan</div>
-                    <div className="stat-value">{stats.rating} / 5.0</div>
-                    <div style={{fontSize:'12px', marginTop:'5px', color:'#eab308'}}>★ Stabil</div>
+                    
+                    {/* Mengambil Skor Rating dari Controller */}
+                    <div className="stat-value">
+                        {stats.rating} <span style={{fontSize:'16px', color:'#9ca3af'}}>/ 5.0</span>
+                    </div>
+
+                    {/* Mengambil Status Label (Sangat Baik/Stabil/dll) dari Controller */}
+                    <div style={{fontSize:'12px', marginTop:'5px', color:'#eab308'}}>
+                        ★ {stats.rating_status}
+                    </div>
                 </div>
             </div>
 
