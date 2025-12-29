@@ -8,6 +8,11 @@ export default function AdminLayout({ children }) {
     // DAFTAR MENU SIDEBAR
     const menus = [
         { name: 'Ringkasan', url: '/admin/dashboard', icon: '📊' },
+        
+        // --- MENU BARU DITAMBAHKAN DI SINI ---
+        { name: 'Laporan Penjualan', url: '/admin/laporan', icon: '📈' }, 
+        // -------------------------------------
+
         { name: 'Scan Tiket', url: '/admin/scan', icon: '📷' }, 
         { name: 'Pesanan Tiket', url: '/admin/orders', icon: '🎟️' },
         { name: 'Galeri Wisata', url: '/admin/gallery', icon: '🖼️' },
