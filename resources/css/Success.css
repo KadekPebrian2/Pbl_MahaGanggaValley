@@ -1,127 +1,145 @@
-/* src/assets/styles/Success.css */
+/* --- DEFINISI WARNA (PALET MAHA GANGGA) --- */
+:root {
+    --bg: #f9fafb;
+    --forest: #5D755B; /* Warna Utama (Army/Forest Green) */
+    --sage: #8ab493;
+    --sage-dark: #4a5e48;
+    --muted: #6b7280;
+}
 
+/* --- LAYOUT UTAMA --- */
 .success-section {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg); /* Warna background global */
-  font-family: 'Poppins', sans-serif;
-  padding: 20px;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg);
+    font-family: 'Poppins', sans-serif; /* Pastikan font sudah di-load di app */
+    padding: 20px;
 }
 
 .success-card {
-  background: white;
-  max-width: 480px;
-  width: 100%;
-  padding: 50px 40px;
-  border-radius: 24px;
-  text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-  position: relative;
-  overflow: hidden;
+    background: white;
+    max-width: 480px;
+    width: 100%;
+    padding: 50px 40px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Garis hiasan di atas kartu (Aksen hijau) */
-.success-card::top {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 6px;
-  background: var(--forest);
+/* Garis hiasan di atas kartu */
+.success-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: var(--forest);
 }
 
-/* Animasi Lingkaran Centang */
+/* --- ANIMASI IKON --- */
 .icon-wrapper {
-  width: 100px;
-  height: 100px;
-  background: rgba(168, 195, 167, 0.2); /* Sage transparan */
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 30px;
-  animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    width: 100px;
+    height: 100px;
+    background: rgba(93, 117, 91, 0.15); /* Transparansi dari warna forest */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .icon-wrapper svg {
-  color: var(--forest);
-  width: 50px;
-  height: 50px;
+    color: var(--forest);
+    width: 50px;
+    height: 50px;
 }
 
 @keyframes popIn {
-  0% { transform: scale(0); opacity: 0; }
-  80% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
 }
 
+/* --- TYPOGRAPHY --- */
 .success-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 2rem;
-  color: var(--forest);
-  margin-bottom: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--forest);
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .success-desc {
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 30px;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 40px;
 }
 
-/* Info Box */
-.info-summary {
-  background: #fafafa;
-  border: 1px dashed var(--sage);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 30px;
-  text-align: left;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.info-row strong {
-  color: var(--forest);
-}
-
-/* Tombol */
+/* --- TOMBOL --- */
+/* Tombol Utama (Hijau) */
 .btn-home {
-  display: block;
-  width: 100%;
-  padding: 15px;
-  background-color: var(--forest);
-  color: white;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: 0.3s;
-  border: none;
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: var(--forest);
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 10px;
+    text-align: center;
 }
 
 .btn-home:hover {
-  background-color: var(--sage-dark);
-  transform: translateY(-2px);
+    background-color: var(--sage-dark);
+    transform: translateY(-2px);
 }
 
+/* Tombol Sekunder (Outline) */
+.btn-secondary {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: transparent;
+    color: var(--forest);
+    border: 1px solid var(--forest);
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.btn-secondary:hover {
+    background-color: #f0fdf4; /* Hijau sangat muda */
+}
+
+/* --- LINK WHATSAPP --- */
 .wa-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 20px;
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 25px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
+    width: 100%;
 }
 
 .wa-link:hover {
-  color: var(--forest);
+    color: var(--forest);
+    text-decoration: underline;
 }

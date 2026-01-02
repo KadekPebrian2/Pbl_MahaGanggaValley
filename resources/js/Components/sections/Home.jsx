@@ -26,13 +26,13 @@ export default function Home() {
               {/* --- PERUBAHAN DI SINI --- */}
               {/* Ganti prop 'to' menjadi 'href' */}
               <Link href="/booking" className="btn btn-primary">
-                Booking Sekarang
+                Get Tickets
               </Link>
               {/* ------------------------- */}
 
               {/* Link Anchor (#) biarkan saja pakai tag <a> biasa */}
               <a href="#gallery" className="btn btn-outline">
-                Lihat Gallery
+                View Gallery
               </a>
             </div>
           </div>

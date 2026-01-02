@@ -2,92 +2,83 @@ import React, { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 
-export default function Ulasan({ dataUlasan }) { // <--- ADMIN MENERIMA 'dataUlasan'
+export default function Ulasan({ dataUlasan }) {
     const { post, delete: destroy } = useForm();
-    const [idSedangDibalas, setIdSedangDibalas] = useState(null);
-    const [teksBalasan, setTeksBalasan] = useState('');
+    const [idReply, setIdReply] = useState(null);
+    const [textReply, setTextReply] = useState('');
 
-    const tanganiBalasan = (e, id) => {
+    const handleReply = (e, id) => {
         e.preventDefault();
         post(route('admin.ulasan.balas', id), {
-            data: { balasan: teksBalasan },
-            onSuccess: () => {
-                setIdSedangDibalas(null);
-                setTeksBalasan('');
-            }
+            data: { balasan: textReply },
+            onSuccess: () => { setIdReply(null); setTextReply(''); }
         });
     };
 
-    const tanganiHapus = (id) => {
-        if (confirm('Hapus ulasan ini?')) {
-            destroy(route('admin.ulasan.hapus', id));
-        }
-    };
+    const handleDelete = (id) => confirm('Hapus ulasan ini?') && destroy(route('admin.ulasan.hapus', id));
 
     return (
         <AdminLayout>
             <Head title="Ulasan Pengunjung" />
             
-            <div style={{marginBottom:'20px'}}>
-                <h1 style={{fontSize:'24px', fontWeight:'bold', color:'#111827'}}>Ulasan & Masukan</h1>
-                <p style={{color:'#6b7280'}}>Kelola ulasan yang masuk dari pengunjung.</p>
+            <style>{`
+                .review-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #f3f4f6; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+                .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+                .user-name { font-weight: 700; font-size: 15px; color: #111827; }
+                .review-date { font-size: 12px; color: #9ca3af; margin-left: 8px; }
+                .stars { color: #f59e0b; font-size: 14px; margin-bottom: 8px; }
+                .review-text { color: #374151; font-style: italic; font-size: 14px; line-height: 1.5; }
+                
+                .reply-box { margin-top: 15px; background: #f9fafb; padding: 15px; border-radius: 8px; border-left: 3px solid #10b981; }
+                .reply-label { font-size: 11px; font-weight: 700; color: #059669; text-transform: uppercase; margin-bottom: 4px; }
+                .reply-content { font-size: 14px; color: #1f2937; }
+
+                .btn-del { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 12px; font-weight: 600; }
+                .btn-del:hover { text-decoration: underline; }
+                
+                .reply-area { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; margin-bottom: 10px; }
+                .btn-send { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; margin-right: 8px; }
+                .btn-cancel { background: #e5e7eb; color: #374151; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
+                .btn-toggle-reply { color: #10b981; background: none; border: none; cursor: pointer; font-weight: 600; font-size: 13px; }
+            `}</style>
+
+            <div style={{marginBottom:'30px'}}>
+                <h1 style={{fontSize:'24px', fontWeight:800, color:'#111827', margin:0}}>Ulasan & Masukan</h1>
+                <p style={{color:'#6b7280', fontSize:'14px', marginTop:'5px'}}>Apa kata pengunjung tentang Maha Gangga Valley.</p>
             </div>
 
-            <div style={{display:'flex', flexDirection:'column', gap:'15px'}}>
-                {/* Cek apakah dataUlasan ada isinya */}
+            <div>
                 {(!dataUlasan || dataUlasan.length === 0) ? (
-                    <div style={{padding:'40px', textAlign:'center', background:'white', borderRadius:'8px', color:'#6b7280'}}>
-                        Belum ada ulasan dari pengunjung.
-                    </div>
+                    <div style={{textAlign:'center', padding:'40px', color:'#9ca3af', background:'white', borderRadius:'12px'}}>Belum ada ulasan.</div>
                 ) : (
                     dataUlasan.map((item) => (
-                        <div key={item.id} style={{background:'white', padding:'20px', borderRadius:'10px', boxShadow:'0 2px 5px rgba(0,0,0,0.05)'}}>
-                            
-                            {/* Header: Nama & Tombol Hapus */}
-                            <div style={{display:'flex', justifyContent:'space-between', marginBottom:'10px'}}>
+                        <div key={item.id} className="review-card">
+                            <div className="review-header">
                                 <div>
-                                    <span style={{fontWeight:'bold', fontSize:'16px'}}>{item.user.name}</span>
-                                    <span style={{fontSize:'12px', color:'#9ca3af', marginLeft:'10px'}}>
-                                        {new Date(item.created_at).toLocaleDateString()}
-                                    </span>
+                                    <span className="user-name">{item.user.name}</span>
+                                    <span className="review-date">{new Date(item.created_at).toLocaleDateString()}</span>
                                 </div>
-                                <button onClick={() => tanganiHapus(item.id)} style={{color:'red', border:'none', background:'none', cursor:'pointer', fontSize:'12px'}}>
-                                    🗑 Hapus
-                                </button>
+                                <button onClick={() => handleDelete(item.id)} className="btn-del">Hapus</button>
                             </div>
 
-                            {/* Isi Ulasan */}
-                            <div style={{margin:'0 0 15px 0'}}>
-                                <div style={{color:'#fbbf24', fontSize:'14px', marginBottom:'5px'}}>{'★'.repeat(item.rating)}</div>
-                                <p style={{color:'#374151', fontStyle:'italic'}}>"{item.isi_ulasan}"</p>
-                            </div>
+                            <div className="stars">{'★'.repeat(item.rating)}</div>
+                            <p className="review-text">"{item.isi_ulasan}"</p>
 
-                            {/* Kolom Balasan */}
-                            <div style={{background:'#f9fafb', padding:'15px', borderRadius:'8px', borderLeft:'3px solid #5D755B'}}>
+                            <div className="reply-box">
                                 {item.balasan ? (
-                                    <div>
-                                        <div style={{color:'#5D755B', fontSize:'11px', fontWeight:'bold', textTransform:'uppercase', marginBottom:'3px'}}>Respon Anda:</div>
-                                        <p style={{margin:0, fontSize:'14px', color:'#1f2937'}}>{item.balasan}</p>
-                                    </div>
+                                    <>
+                                        <div className="reply-label">Respon Admin:</div>
+                                        <div className="reply-content">{item.balasan}</div>
+                                    </>
                                 ) : (
-                                    idSedangDibalas === item.id ? (
-                                        <form onSubmit={(e) => tanganiBalasan(e, item.id)}>
-                                            <textarea 
-                                                value={teksBalasan} 
-                                                onChange={(e) => setTeksBalasan(e.target.value)}
-                                                placeholder="Tulis balasan..."
-                                                rows="2"
-                                                style={{width:'100%', padding:'10px', marginBottom:'10px', borderRadius:'6px', border:'1px solid #d1d5db'}}
-                                            ></textarea>
-                                            <div style={{display:'flex', gap:'10px'}}>
-                                                <button type="submit" style={{background:'#5D755B', color:'white', border:'none', padding:'6px 12px', borderRadius:'4px', cursor:'pointer'}}>Kirim</button>
-                                                <button type="button" onClick={() => setIdSedangDibalas(null)} style={{background:'#e5e7eb', color:'#374151', border:'none', padding:'6px 12px', borderRadius:'4px', cursor:'pointer'}}>Batal</button>
-                                            </div>
+                                    idReply === item.id ? (
+                                        <form onSubmit={(e) => handleReply(e, item.id)}>
+                                            <textarea className="reply-area" rows="2" placeholder="Tulis balasan..." value={textReply} onChange={(e) => setTextReply(e.target.value)}></textarea>
+                                            <button type="submit" className="btn-send">Kirim</button>
+                                            <button type="button" onClick={() => setIdReply(null)} className="btn-cancel">Batal</button>
                                         </form>
                                     ) : (
-                                        <button onClick={() => setIdSedangDibalas(item.id)} style={{color:'#5D755B', background:'none', border:'none', cursor:'pointer', fontWeight:'600', fontSize:'13px'}}>
-                                            ↩ Balas Ulasan Ini
-                                        </button>
+                                        <button onClick={() => setIdReply(item.id)} className="btn-toggle-reply">↩ Balas Ulasan</button>
                                     )
                                 )}
                             </div>

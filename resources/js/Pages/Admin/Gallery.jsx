@@ -3,25 +3,13 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm, router } from '@inertiajs/react';
 
 export default function GalleryAdmin({ photos = [] }) {
-    const { data: createData, setData: setCreateData, post, processing: createProcessing, errors: createErrors, reset } = useForm({
-        judul: '', deskripsi: '', foto: null, 
-    });
-
+    const { data: createData, setData: setCreateData, post, processing, reset } = useForm({ judul: '', deskripsi: '', foto: null });
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [currentPhoto, setCurrentPhoto] = useState(null);
+    const { data: editData, setData: setEditData, post: postUpdate } = useForm({ judul: '', deskripsi: '', foto: null, _method: 'post' });
 
-    const { data: editData, setData: setEditData, post: postUpdate, processing: editProcessing } = useForm({
-        judul: '', deskripsi: '', foto: null, _method: 'post' 
-    });
-
-    const basePath = '/images/gallery/';
-
-    // --- LOGIKA CRUD ---
-    const submitCreate = (e) => {
-        e.preventDefault();
-        post(route('admin.gallery.store'), { onSuccess: () => reset() });
-    };
-
+    const submitCreate = (e) => { e.preventDefault(); post(route('admin.gallery.store'), { onSuccess: () => reset() }); };
+    
     const openEditModal = (photo) => {
         setCurrentPhoto(photo);
         setEditData({ judul: photo.judul, deskripsi: photo.deskripsi, foto: null, _method: 'post' });
@@ -30,144 +18,101 @@ export default function GalleryAdmin({ photos = [] }) {
 
     const submitUpdate = (e) => {
         e.preventDefault();
-        postUpdate(route('admin.gallery.update', currentPhoto.idFoto), { 
-            onSuccess: () => setIsEditModalOpen(false),
-        });
+        postUpdate(route('admin.gallery.update', currentPhoto.idFoto), { onSuccess: () => setIsEditModalOpen(false) });
     };
 
-    const handleDelete = (photoId) => {
-        if (confirm('Apakah Anda yakin ingin menghapus foto ini secara permanen?')) {
-            router.delete(route('admin.gallery.destroy', photoId));
-        }
-    };
-
-    // === STYLE CSS MANUAl ===
-    const styles = {
-        cardUnggah: {
-            backgroundColor: 'white',
-            padding: '30px',
-            borderRadius: '15px',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-            marginBottom: '40px',
-            border: '1px solid #eee'
-        },
-        input: {
-            width: '100%',
-            padding: '12px',
-            marginBottom: '15px',
-            borderRadius: '8px',
-            border: '2px solid #ddd',
-            display: 'block'
-        },
-        btnSimpan: {
-            backgroundColor: '#4f46e5',
-            color: 'white',
-            padding: '15px',
-            borderRadius: '8px',
-            border: 'none',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            width: '100%'
-        },
-        grid: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-            gap: '25px'
-        },
-        photoCard: {
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            border: '1px solid #ddd',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
-        },
-        btnEdit: {
-            backgroundColor: '#2563eb', // BIRU CERAH
-            color: 'white',
-            padding: '10px',
-            borderRadius: '6px',
-            border: 'none',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            marginBottom: '8px',
-            width: '100%',
-            fontSize: '14px'
-        },
-        btnHapus: {
-            backgroundColor: '#dc2626', // MERAH CERAH
-            color: 'white',
-            padding: '10px',
-            borderRadius: '6px',
-            border: 'none',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            width: '100%',
-            fontSize: '14px'
-        }
-    };
+    const handleDelete = (id) => confirm('Hapus permanen?') && router.delete(route('admin.gallery.destroy', id));
 
     return (
         <AdminLayout>
-            <Head title="Galeri Wisata Admin" />
-            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+            <Head title="Galeri Wisata" />
+            
+            <style>{`
+                .section-card { background: white; padding: 25px; border-radius: 16px; border: 1px solid #f3f4f6; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 30px; }
+                .section-title { font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 20px; border-bottom: 1px solid #f3f4f6; padding-bottom: 10px; }
                 
-                <h2 style={{ fontSize: '24px', fontWeight: 'bold', borderBottom: '2px solid #eee', paddingBottom: '10px', marginBottom: '20px' }}>
-                    MANAJEMEN GALERI
-                </h2>
+                /* Form Styles */
+                .form-group { margin-bottom: 15px; }
+                .form-label { display: block; font-size: 12px; font-weight: 700; color: #4b5563; margin-bottom: 5px; text-transform: uppercase; }
+                .form-input { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: 0.2s; }
+                .form-input:focus { border-color: #4f46e5; outline: none; ring: 2px solid #e0e7ff; }
+                .btn-submit { width: 100%; padding: 12px; background: #4f46e5; color: white; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+                .btn-submit:hover { background: #4338ca; }
 
-                {/* FORM UPLOAD MEDIA */}
-                <div style={styles.cardUnggah}>
-                    <h3 style={{ color: '#4f46e5', marginBottom: '20px', fontWeight: 'bold' }}>UNGGAH MEDIA BARU</h3>
-                    <form onSubmit={submitCreate}>
-                        <label style={{ fontWeight: 'bold', fontSize: '12px' }}>JUDUL FOTO</label>
-                        <input style={styles.input} type="text" value={createData.judul} onChange={(e) => setCreateData('judul', e.target.value)} placeholder="Masukkan judul..." />
-                        
-                        <label style={{ fontWeight: 'bold', fontSize: '12px' }}>DESKRIPSI</label>
-                        <textarea style={styles.input} value={createData.deskripsi} onChange={(e) => setCreateData('deskripsi', e.target.value)} rows="3" placeholder="Deskripsi foto..." />
-                        
-                        <label style={{ fontWeight: 'bold', fontSize: '12px' }}>PILIH FILE</label>
-                        <input style={styles.input} type="file" onChange={(e) => setCreateData('foto', e.target.files[0])} />
-                        
-                        <button type="submit" style={styles.btnSimpan} disabled={createProcessing}>
-                            {createProcessing ? 'PROSES...' : 'SIMPAN KE GALERI'}
-                        </button>
-                    </form>
-                </div>
+                /* Grid Foto */
+                .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+                .photo-card { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; transition: transform 0.2s; }
+                .photo-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+                .photo-img { width: 100%; height: 180px; object-fit: cover; }
+                .photo-body { padding: 15px; }
+                .photo-title { font-weight: 700; font-size: 14px; margin: 0 0 5px 0; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                .photo-desc { font-size: 12px; color: #6b7280; margin-bottom: 15px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+                
+                .btn-group { display: flex; gap: 8px; }
+                .btn-mini { flex: 1; padding: 8px; font-size: 12px; font-weight: 700; border: none; border-radius: 6px; cursor: pointer; }
+                .btn-edit { background: #dbeafe; color: #1e40af; }
+                .btn-del { background: #fee2e2; color: #991b1b; }
 
-                {/* LIST DAFTAR FOTO */}
-                <h3 style={{ marginBottom: '20px', fontWeight: 'bold' }}>DAFTAR FOTO ({photos.length})</h3>
-                <div style={styles.grid}>
-                    {photos.map((photo) => (
-                        <div key={photo.idFoto} style={styles.photoCard}>
-                            <img src={basePath + photo.namaFile} alt={photo.judul} style={{ width: '100%', height: '180px', objectFit: 'cover' }} />
-                            <div style={{ padding: '15px' }}>
-                                <h4 style={{ fontWeight: 'bold', marginBottom: '5px', textTransform: 'uppercase' }}>{photo.judul}</h4>
-                                <p style={{ fontSize: '12px', color: '#666', marginBottom: '15px', height: '35px', overflow: 'hidden' }}>{photo.deskripsi}</p>
-                                
-                                {/* TOMBOL EDIT & HAPUS */}
-                                <button onClick={() => openEditModal(photo)} style={styles.btnEdit}>
-                                    ✎ EDIT DATA
-                                </button>
-                                <button onClick={() => handleDelete(photo.idFoto)} style={styles.btnHapus}>
-                                    🗑 HAPUS DATA
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                /* Modal */
+                .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+                .modal-box { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 450px; }
+            `}</style>
+
+            <div className="section-card">
+                <h3 className="section-title">UNGGAH MEDIA BARU</h3>
+                <form onSubmit={submitCreate}>
+                    <div className="form-group">
+                        <label className="form-label">Judul Foto</label>
+                        <input className="form-input" type="text" value={createData.judul} onChange={e => setCreateData('judul', e.target.value)} placeholder="Contoh: Pemandangan Pagi" />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Deskripsi</label>
+                        <textarea className="form-input" rows="2" value={createData.deskripsi} onChange={e => setCreateData('deskripsi', e.target.value)} placeholder="Deskripsi singkat..." />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">File Foto</label>
+                        <input className="form-input" type="file" onChange={e => setCreateData('foto', e.target.files[0])} />
+                    </div>
+                    <button type="submit" className="btn-submit" disabled={processing}>{processing ? 'Mengunggah...' : 'Simpan ke Galeri'}</button>
+                </form>
             </div>
 
-            {/* MODAL EDIT (CSS INLINE) */}
+            <h3 style={{fontSize:'18px', fontWeight:'800', marginBottom:'15px', color:'#1f2937'}}>KOLEKSI FOTO ({photos.length})</h3>
+            <div className="photo-grid">
+                {photos.map(photo => (
+                    <div key={photo.idFoto} className="photo-card">
+                        <img src={`/images/gallery/${photo.namaFile}`} alt={photo.judul} className="photo-img" />
+                        <div className="photo-body">
+                            <h4 className="photo-title">{photo.judul}</h4>
+                            <p className="photo-desc">{photo.deskripsi}</p>
+                            <div className="btn-group">
+                                <button className="btn-mini btn-edit" onClick={() => openEditModal(photo)}>EDIT</button>
+                                <button className="btn-mini btn-del" onClick={() => handleDelete(photo.idFoto)}>HAPUS</button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             {isEditModalOpen && (
-                <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-                    <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '15px', width: '100%', maxWidth: '500px' }}>
-                        <h4 style={{ fontWeight: 'bold', marginBottom: '20px' }}>EDIT DATA GALERI</h4>
-                        <input style={styles.input} type="text" value={editData.judul} onChange={(e) => setEditData('judul', e.target.value)} />
-                        <textarea style={styles.input} value={editData.deskripsi} onChange={(e) => setEditData('deskripsi', e.target.value)} rows="3" />
-                        <input style={styles.input} type="file" onChange={(e) => setEditData('foto', e.target.files[0])} />
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                            <button onClick={() => setIsEditModalOpen(false)} style={{ flex: 1, padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}>BATAL</button>
-                            <button onClick={submitUpdate} style={{ flex: 1, padding: '10px', borderRadius: '5px', border: 'none', backgroundColor: '#2563eb', color: 'white', fontWeight: 'bold' }}>SIMPAN</button>
+                <div className="modal-overlay">
+                    <div className="modal-box">
+                        <h3 className="section-title">EDIT FOTO</h3>
+                        <div className="form-group">
+                            <label className="form-label">Judul</label>
+                            <input className="form-input" type="text" value={editData.judul} onChange={e => setEditData('judul', e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Deskripsi</label>
+                            <textarea className="form-input" rows="3" value={editData.deskripsi} onChange={e => setEditData('deskripsi', e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Ganti Foto (Opsional)</label>
+                            <input className="form-input" type="file" onChange={e => setEditData('foto', e.target.files[0])} />
+                        </div>
+                        <div className="btn-group">
+                            <button className="btn-mini" style={{background:'#f3f4f6', color:'#374151'}} onClick={() => setIsEditModalOpen(false)}>BATAL</button>
+                            <button className="btn-mini" style={{background:'#2563eb', color:'white'}} onClick={submitUpdate}>SIMPAN PERUBAHAN</button>
                         </div>
                     </div>
                 </div>
