@@ -180,7 +180,7 @@ export default function Payment({ bookingData }) {
             <p>Scan untuk melakukan pembayaran</p>
             
             <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" 
+              src="/images/qris.png" 
               alt="QRIS Code" 
               className="qris-image-large" 
             />

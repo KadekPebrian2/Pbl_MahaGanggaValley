@@ -3,84 +3,143 @@ import { Head, useForm } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 
 export default function Ulasan({ dataUlasan }) {
-    const { post, delete: destroy } = useForm();
-    const [idReply, setIdReply] = useState(null);
-    const [textReply, setTextReply] = useState('');
+    // 1. State 'Rahasia' untuk menyimpan ID yang dipilih
+    const [selectedId, setSelectedId] = useState(null);
 
-    const handleReply = (e, id) => {
-        e.preventDefault();
-        post(route('admin.ulasan.balas', id), {
-            data: { balasan: textReply },
-            onSuccess: () => { setIdReply(null); setTextReply(''); }
-        });
+    const { delete: destroy, processing } = useForm();
+
+    // 2. Fungsi Eksekusi Hapus
+    const handleDeleteSelected = () => {
+        if (!selectedId) return; 
+
+        if (confirm('Apakah Anda yakin ingin menghapus komentar yang dipilih ini?')) {
+            destroy(route('admin.ulasan.hapus', selectedId), {
+                preserveScroll: true,
+                onSuccess: () => setSelectedId(null)
+            });
+        }
     };
 
-    const handleDelete = (id) => confirm('Hapus ulasan ini?') && destroy(route('admin.ulasan.hapus', id));
+    // 3. Fungsi Pilih Diam-diam
+    const selectReview = (id) => {
+        if (selectedId === id) {
+            setSelectedId(null);
+        } else {
+            setSelectedId(id);
+        }
+    };
 
     return (
         <AdminLayout>
-            <Head title="Ulasan Pengunjung" />
+            <Head title="Kelola Ulasan" />
             
             <style>{`
-                .review-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #f3f4f6; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-                .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-                .user-name { font-weight: 700; font-size: 15px; color: #111827; }
-                .review-date { font-size: 12px; color: #9ca3af; margin-left: 8px; }
-                .stars { color: #f59e0b; font-size: 14px; margin-bottom: 8px; }
-                .review-text { color: #374151; font-style: italic; font-size: 14px; line-height: 1.5; }
-                
-                .reply-box { margin-top: 15px; background: #f9fafb; padding: 15px; border-radius: 8px; border-left: 3px solid #10b981; }
-                .reply-label { font-size: 11px; font-weight: 700; color: #059669; text-transform: uppercase; margin-bottom: 4px; }
-                .reply-content { font-size: 14px; color: #1f2937; }
+                /* STYLE KARTU ASLI (Stealth Mode) */
+                .review-card { 
+                    background: white; 
+                    padding: 20px; 
+                    border-radius: 12px; 
+                    border: 1px solid #f3f4f6; 
+                    margin-bottom: 20px; 
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.02); 
+                    cursor: pointer; 
+                }
 
-                .btn-del { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 12px; font-weight: 600; }
-                .btn-del:hover { text-decoration: underline; }
+                .review-header { 
+                    display: flex; 
+                    justify-content: space-between; 
+                    align-items: flex-start; 
+                    margin-bottom: 12px; 
+                    /* Border bottom dihapus agar lebih bersih karena bintang pindah ke bawah */
+                    /* border-bottom: 1px solid #f3f4f6; */ 
+                    /* padding-bottom: 10px; */
+                }
                 
-                .reply-area { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; margin-bottom: 10px; }
-                .btn-send { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; margin-right: 8px; }
-                .btn-cancel { background: #e5e7eb; color: #374151; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
-                .btn-toggle-reply { color: #10b981; background: none; border: none; cursor: pointer; font-weight: 600; font-size: 13px; }
+                .user-name { font-weight: 700; font-size: 16px; color: #111827; }
+                .review-date { font-size: 12px; color: #9ca3af; display: block; margin-top: 2px; }
+                
+                .review-text { 
+                    color: #374151; 
+                    font-style: italic; 
+                    font-size: 14px; 
+                    line-height: 1.6; 
+                    margin-bottom: 15px; /* Jarak antara teks dan bintang */
+                }
+
+                /* STYLE BINTANG (Posisi Baru) */
+                .stars { 
+                    color: #f59e0b; 
+                    font-size: 18px; /* Sedikit diperbesar */
+                    letter-spacing: 2px; 
+                    text-align: right; /* Opsional: Bintang di kanan bawah */
+                }
+                
+                /* TOMBOL HAPUS */
+                .top-delete-btn {
+                    padding: 8px 25px;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    font-size: 14px;
+                    border: none;
+                    transition: all 0.3s ease;
+                }
+                .btn-disabled { background-color: #f3f4f6; color: #9ca3af; cursor: default; }
+                .btn-active { background-color: #fee2e2; color: #ef4444; cursor: pointer; border: 1px solid #fecaca; }
+                .btn-active:hover { background-color: #ef4444; color: white; }
             `}</style>
 
-            <div style={{marginBottom:'30px'}}>
-                <h1 style={{fontSize:'24px', fontWeight:800, color:'#111827', margin:0}}>Ulasan & Masukan</h1>
-                <p style={{color:'#6b7280', fontSize:'14px', marginTop:'5px'}}>Apa kata pengunjung tentang Maha Gangga Valley.</p>
+            {/* --- HEADER --- */}
+            <div style={{marginBottom:'30px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                <div>
+                    <h1 style={{fontSize:'24px', fontWeight:800, color:'#111827', margin:0}}>Kelola Ulasan</h1>
+                    <p style={{color:'#6b7280', fontSize:'14px', marginTop:'5px'}}>
+                        Daftar ulasan dari pengunjung.
+                    </p>
+                </div>
+
+                <button 
+                    onClick={handleDeleteSelected} 
+                    disabled={!selectedId || processing}
+                    className={`top-delete-btn ${selectedId ? 'btn-active' : 'btn-disabled'}`}
+                >
+                    {processing ? '...' : (selectedId ? 'Hapus' : 'Hapus')}
+                </button>
             </div>
 
+            {/* --- LIST KOMENTAR --- */}
             <div>
                 {(!dataUlasan || dataUlasan.length === 0) ? (
-                    <div style={{textAlign:'center', padding:'40px', color:'#9ca3af', background:'white', borderRadius:'12px'}}>Belum ada ulasan.</div>
+                    <div style={{textAlign:'center', padding:'40px', color:'#9ca3af', background:'white', borderRadius:'12px'}}>
+                        Belum ada ulasan.
+                    </div>
                 ) : (
                     dataUlasan.map((item) => (
-                        <div key={item.id} className="review-card">
+                        <div 
+                            key={item.id} 
+                            onClick={() => selectReview(item.id)}
+                            className="review-card"
+                        >
+                            {/* 1. Header (Hanya Nama & Tanggal) */}
                             <div className="review-header">
                                 <div>
                                     <span className="user-name">{item.user.name}</span>
-                                    <span className="review-date">{new Date(item.created_at).toLocaleDateString()}</span>
+                                    <span className="review-date">
+                                        {new Date(item.created_at).toLocaleDateString('id-ID', {
+                                            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                                        })}
+                                    </span>
                                 </div>
-                                <button onClick={() => handleDelete(item.id)} className="btn-del">Hapus</button>
                             </div>
 
-                            <div className="stars">{'★'.repeat(item.rating)}</div>
+                            {/* 2. Isi Komentar */}
                             <p className="review-text">"{item.isi_ulasan}"</p>
 
-                            <div className="reply-box">
-                                {item.balasan ? (
-                                    <>
-                                        <div className="reply-label">Respon Admin:</div>
-                                        <div className="reply-content">{item.balasan}</div>
-                                    </>
-                                ) : (
-                                    idReply === item.id ? (
-                                        <form onSubmit={(e) => handleReply(e, item.id)}>
-                                            <textarea className="reply-area" rows="2" placeholder="Tulis balasan..." value={textReply} onChange={(e) => setTextReply(e.target.value)}></textarea>
-                                            <button type="submit" className="btn-send">Kirim</button>
-                                            <button type="button" onClick={() => setIdReply(null)} className="btn-cancel">Batal</button>
-                                        </form>
-                                    ) : (
-                                        <button onClick={() => setIdReply(item.id)} className="btn-toggle-reply">↩ Balas Ulasan</button>
-                                    )
-                                )}
+                            {/* 3. Bintang (Sekarang di Bawah) */}
+                            <div className="stars">
+                                {'★'.repeat(item.rating)}
+                                <span style={{color:'#e5e7eb'}}>
+                                    {'★'.repeat(5-item.rating)}
+                                </span>
                             </div>
                         </div>
                     ))

@@ -71,17 +71,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/orders/{id}/reject', [AdminController::class, 'rejectOrder'])->name('admin.orders.reject');
 
     // ======================================================
-    // C. SCAN TIKET (YANG KITA PERBAIKI)
+    // C. SCAN TIKET
     // ======================================================
-    // Catatan: Karena ada di dalam group 'prefix' admin, 
-    // kita cukup tulis '/scan', nanti otomatis jadi '/admin/scan'
-    
-    // 1. Halaman Kamera
     Route::get('/scan', [ScanTiketController::class, 'index'])->name('admin.scan');
-
-    // 2. Proses API Cek QR (Dipanggil Axios)
     Route::post('/scan/check', [ScanTiketController::class, 'store'])->name('admin.scan.check');
-    // ======================================================
 
     // D. Manajemen Galeri
     Route::get('/gallery', [GalleryController::class, 'index'])->name('admin.gallery.index');
@@ -89,9 +82,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/gallery/{id}', [GalleryController::class, 'update'])->name('admin.gallery.update');
     Route::delete('/gallery/{id}', [GalleryController::class, 'destroy'])->name('admin.gallery.destroy');
 
-    // E. Manajemen Ulasan
+    // ======================================================
+    // E. MANAJEMEN ULASAN (MODERASI) - DIPERBAIKI
+    // ======================================================
+    // Menampilkan daftar ulasan
     Route::get('/ulasan', [UlasanController::class, 'indexAdmin'])->name('admin.ulasan');
-    Route::post('/ulasan/{id}/balas', [UlasanController::class, 'simpanBalasan'])->name('admin.ulasan.balas');
+
+    
+    // Route HAPUS (Moderasi) DIPERTAHANKAN
     Route::delete('/ulasan/{id}', [UlasanController::class, 'hapusUlasanAdmin'])->name('admin.ulasan.hapus');
 
     // F. Laporan Penjualan Tiket
